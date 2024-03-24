@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rprofile
+packrat/
+biostat.Rproj
+*(edited).pdf
+packrat/lib*/
