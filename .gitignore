@@ -7,3 +7,5 @@ packrat/
 biostat.Rproj
 *(edited).pdf
 packrat/lib*/
+*.XPT
+docx/
