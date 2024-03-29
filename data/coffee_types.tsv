@@ -1,0 +1,153 @@
+FNDDS food code	FNDDS food description	Caffeinated status	Sugary status	Fatty status	Milk-containing status
+92100000	coffee, ns as to type	1	-	1	-
+92100500	coffee, regular, ns as to ground or instant	1	-	1	-
+92101000	coffee, brewed	1	-	1	-
+92101500	coffee, made from ground, equal parts regular and decaffeinated	0	-	1	-
+92101600	coffee, turkish	1	-	1	-
+92101610	coffee, espresso	1	-	1	-
+92101630	coffee, espresso, decaffeinated	0	-	1	-
+92101640	coffee, mexican, regular, unsweetened (- milk; -t cafe con leche)	1	0	1	0
+92101650	coffee, mexican, regular, sweetened (- milk; -t cafe con leche)	1	1	1	0
+92101660	coffee, mexican, decaffeinated, unsweetened (- milk; -t cafe con leche)	0	0	1	0
+92101670	coffee, mexican, decaffeinated, sweetened (- milk; -t cafe con leche)	0	1	1	0
+92101700	coffee, made from ground, regular, flavored	1	-	1	-
+92101700	coffee, brewed, flavored	1	-	1	-
+92101800	coffee, cuban	1	-	1	-
+92101810	coffee, macchiato	1	-	1	-
+92101820	coffee, macchiato, sweetened	1	1	1	-
+92101850	coffee, cafe con leche	1	-	1	-
+92101851	coffee, cafe con leche, decaffeinated	0	-	1	-
+92101900	coffee, latte	1	-	1	-
+92101901	coffee, latte, -nfat	1	-	0	-
+92101903	coffee, latte, with -n-dairy milk	1	-	1	1
+92101904	coffee, latte, flavored	1	-	1	-
+92101905	coffee, latte, -nfat, flavored	1	-	0	-
+92101906	coffee, latte, with -n-dairy milk, flavored	1	-	1	1
+92101910	coffee, latte, decaffeinated	0	-	1	-
+92101911	coffee, latte, decaffeinated, -nfat	0	-	0	-
+92101913	coffee, latte, decaffeinated, with -n-dairy milk	0	-	1	1
+92101917	coffee, latte, decaffeinated, flavored	0	-	1	-
+92101918	coffee, latte, decaffeinated, -nfat, flavored	0	-	0	-
+92101919	coffee, latte, decaffeinated, with -n-dairy milk, flavored	0	-	1	1
+92101920	blended coffee beverage, made with regular coffee, milk, and ice, sweetened	1	1	1	1
+92101921	frozen coffee drink, -nfat	1	-	0	-
+92101923	frozen coffee drink, with -n-dairy milk	1	-	1	1
+92101925	blended coffee beverage, made with regular coffee, milk, and ice, sweetened, with whipped cream	1	1	1	1
+92101926	frozen coffee drink, -nfat, with whipped cream	1	-	0	-
+92101928	frozen coffee drink, with -n-dairy milk and whipped cream	1	-	1	1
+92101930	blended coffee beverage, made with decaffeinated coffee, milk, and ice, sweetened	0	1	1	1
+92101930	frozen coffee drink, decaffeinated	0	-	1	-
+92101931	frozen coffee drink, decaffeinated, -nfat	0	-	0	-
+92101933	frozen coffee drink, decaffeinated, with -n-dairy milk	0	-	1	1
+92101935	blended coffee beverage, made with decaffeinated coffee, milk, and ice, sweetened, with whipped cream	0	1	1	1
+92101936	frozen coffee drink, decaffeinated, -nfat, with whipped cream	0	-	0	-
+92101938	frozen coffee drink, decaffeinated, with -n-dairy milk and whipped cream	0	-	1	1
+92101950	coffee, mocha	1	-	1	-
+92101950	coffee, cafe mocha	1	-	1	-
+92101955	coffee, cafe mocha, -nfat	1	-	0	-
+92101960	coffee, mocha, made with soy milk	1	-	1	1
+92101965	coffee, cafe mocha, decaffeinated	0	-	1	-
+92101970	coffee, cafe mocha, decaffeinated, -nfat	0	-	0	-
+92101975	coffee, cafe mocha, decaffeinated, with -n-dairy milk	0	-	1	1
+92102000	frozen mocha coffee drink	1	-	1	-
+92102010	frozen mocha coffee drink, -nfat	1	-	0	-
+92102020	frozen mocha coffee drink, with -n-dairy milk	1	-	1	1
+92102030	frozen mocha coffee drink, with whipped cream	1	-	1	-
+92102040	frozen mocha coffee drink, -nfat, with whipped cream	1	-	0	-
+92102050	frozen mocha coffee drink, with -n-dairy milk and whipped cream	1	-	1	1
+92102060	frozen mocha coffee drink, decaffeinated	0	-	1	-
+92102070	frozen mocha coffee drink, decaffeinated, -nfat	0	-	0	-
+92102080	frozen mocha coffee drink, decaffeinated, with -n-dairy milk	0	-	1	1
+92102090	frozen mocha coffee drink, decaffeinated, with whipped cream	0	-	1	-
+92102100	frozen mocha coffee drink, decaffeinated, -nfat, with whipped cream	0	-	0	-
+92102110	frozen mocha coffee drink, decaffeinated, with -n-dairy milk and whipped cream	0	-	1	1
+92102400	iced coffee, brewed	1	-	1	-
+92102401	iced coffee, brewed, decaffeinated	0	-	1	-
+92102450	iced coffee, pre-lightened and pre-sweetened	1	1	1	-
+92102500	coffee, iced latte	1	-	1	-
+92102501	coffee, iced latte, -nfat	1	-	0	-
+92102502	coffee, iced latte, with -n-dairy milk	1	-	1	1
+92102503	coffee, iced latte, flavored	1	-	1	-
+92102504	coffee, iced latte, -nfat, flavored	1	-	0	-
+92102505	coffee, iced latte, with -n-dairy milk, flavored	1	-	1	1
+92102510	coffee, iced latte, decaffeinated	0	-	1	-
+92102511	coffee, iced latte, decaffeinated, -nfat	0	-	0	-
+92102512	coffee, iced latte, decaffeinated, with -n-dairy milk	0	-	1	1
+92102513	coffee, iced latte, decaffeinated, flavored	0	-	1	-
+92102514	coffee, iced latte, decaffeinated, -nfat, flavored	0	-	0	-
+92102515	coffee, iced latte, decaffeinated, with -n-dairy milk, flavored	0	-	1	1
+92102600	coffee, iced cafe mocha	1	-	1	-
+92102601	coffee, iced cafe mocha, -nfat	1	-	0	-
+92102602	coffee, iced cafe mocha, with -n-dairy milk	1	-	1	1
+92102610	coffee, iced cafe mocha, decaffeinated	0	-	1	-
+92102611	coffee, iced cafe mocha, decaffeinated, -nfat	0	-	0	-
+92102612	coffee, iced cafe mocha, decaffeinated, with -n-dairy milk	0	-	1	1
+92103000	coffee, made from powdered instant, regular	1	-	1	-
+92103000	coffee, instant, reconstituted	1	-	1	-
+92104000	coffee, made from powdered instant, 50% less caffeine	1	-	1	-
+92105000	coffee, liquid concentrate	1	-	1	-
+92105010	coffee, made from liquid concentrate	1	-	1	-
+92106000	coffee, acid neutralized, from powdered instant	1	-	1	-
+92111000	coffee, decaffeinated, ns as to ground or instant	0	-	1	-
+92111010	coffee, decaffeinated, made from ground	0	-	1	-
+92114000	coffee, decaffeinated, made from powdered instant	0	-	1	-
+92121000	coffee, made from powdered instant mix, with whitener and sugar, instant	1	1	1	-
+92121001	coffee, instant, decaffeinated, pre-lightened and pre-sweetened with sugar, reconsitituted	0	1	1	-
+92121010	coffee, made from powdered instant mix, presweetened, - whitener	1	1	1	-
+92121020	coffee and cocoa (mocha), made from powdered instant mix, with whitener, presweetened	1	1	1	-
+92121030	coffee and cocoa (mocha), made from powdered instant mix, with whitener and low calorie sweetener	1	1	1	-
+92121040	coffee, made from powdered instant mix, with whitener and low calorie sweetener	1	1	1	-
+92121041	coffee, instant, decaffeinated, pre-lightened and pre-sweetened with low calorie sweetener, reconstituted	0	1	1	-
+92121050	coffee and cocoa (mocha), made from powdered instant mix, with whitener and low calorie sweetener, decaffeinated	0	1	1	-
+92121050	coffee, mocha, instant, decaffeinated, pre-lightened and pre-sweetened with low calorie sweetener, reconstituted	0	1	1	-
+92130000	coffee, regular, presweetened with sugar, pre-lightened	1	1	1	-
+92130000	coffee, pre-lightened and pre-sweetened with sugar	1	1	1	-
+92130001	coffee, decaffeinated, presweetened with sugar, pre-lightened	0	1	1	-
+92130005	coffee, regular, with low-calorie sweetener, pre-lightened	1	1	1	-
+92130005	coffee, pre-lightened and pre-sweetened with low calorie sweetener	1	1	1	-
+92130006	coffee, decaffeinated, with low-calorie sweetener, pre-lightened	0	1	1	-
+92130010	coffee, pre-lightened, - sugar	1	0	1	-
+92130011	coffee, decaffeinated, pre-lightened	0	-	1	-
+92130020	coffee, presweetened with sugar	1	1	1	-
+92130021	coffee, decaffeinated, pre-sweetened with sugar	0	1	1	-
+92130030	coffee, pre-sweetened with low calorie sweetener	1	1	1	-
+92130031	coffee, decaffeinated, pre-sweetened with low calorie sweetener	0	1	1	-
+92150000	coffee and chicory, ns as to ground or instant	1	-	1	-
+92151000	coffee and chicory, made from powdered instant	1	-	1	-
+92151100	coffee, decaffeinated, and chicory, made from powdered instant	0	-	1	-
+92152000	coffee and chicory, made from ground	1	-	1	-
+92152000	coffee and chicory, brewed	1	-	1	-
+92152010	coffee and chicory, brewed, decaffeinated	0	-	1	-
+92153000	coffee, regular, with cereal	1	-	1	-
+92153100	coffee, decaffeinated, with cereal	0	-	1	-
+92161000	cappucci-	1	-	1	-
+92161000	coffee, cappucci-	1	-	1	-
+92161001	coffee, cappucci-, -nfat	1	-	0	-
+92161002	coffee, cappucci-, with -n-dairy milk	1	-	1	1
+92161005	cappucci-, sweetened	1	1	1	-
+92162000	cappucci-, decaffeinated	0	-	1	-
+92162000	coffee, cappucci-, decaffeinated	0	-	1	-
+92162001	coffee, cappucci-, decaffeinated, -nfat	0	-	0	-
+92162002	coffee, cappucci-, decaffeinated, with -n-dairy milk	0	-	1	1
+92162005	cappucci-, decaffeinated, sweetened	0	1	1	-
+92171000	coffee, bottled/canned	1	-	1	-
+92171010	coffee, bottled/canned, light	1	-	1	-
+92191000	coffee, dry instant powder, ns as to regular or decaffeinated	0	-	1	-
+92191100	coffee, dry instant powder, regular	1	-	1	-
+92191105	coffee, instant, 50% less caffeine, -t reconstituted	1	-	1	-
+92191200	coffee, dry instant powder, decaffeinated	0	-	1	-
+92191200	coffee, instant, decaffeinated, -t reconstituted	0	-	1	-
+92191250	coffee, dry, acid neutralized	1	-	1	-
+92191400	coffee, instant, pre-sweetened with sugar, -t reconstituted	1	1	1	-
+92191500	coffee and chicory, dry instant powder	1	-	1	-
+92191520	coffee, decaffeinated, and chicory, dry instant powder	0	-	1	-
+92192000	coffee and cocoa (mocha) mix, dry instant powder with whitener, presweetened	1	1	1	-
+92192000	coffee, mocha, instant, pre-lightened and pre-sweetened with sugar, -t reconstituted	1	1	1	-
+92192030	coffee and cocoa (mocha) mix, dry instant powder with whitener and low calorie sweetener	1	1	1	-
+92192030	coffee, mocha, instant, pre-lightened and pre-sweetened with low calorie sweetener, -t reconstituted	1	1	1	-
+92192040	coffee and cocoa (mocha) mix, dry instant powder, with whitener and low calorie sweetener, decaffeinated	0	1	1	-
+92192040	coffee, mocha, instant, decaffeinated, pre-lightened and pre-sweetend with low calorie sweetener, -t reconstituted	0	1	1	-
+92193000	coffee, dry instant powder, with whitener and sugar	1	1	1	-
+92193005	coffee, instant, decaffeinated, pre-lightened and pre-sweetened with sugar, -t reconstituted	0	1	1	-
+92193020	coffee, dry instant powder, with whitener and low calorie sweetener	1	1	1	-
+92193025	coffee, instant, decaffeinated, pre-lightened and pre-sweetened with low calorie sweetener, -t reconstituted	0	1	1	-
