@@ -23,14 +23,6 @@ From the links below it's possible to access all types of data:
 
 [2003-04](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2003)
 
-#### Dietary Data
-From the Dietary Data we retrieved the following Data Files:
-- Dietary Interview - Individual Foods 
-
-    Most important variables are: <br>
-    - **DRDIFDCD**: USDA food code (this code is equivalent to FNDDS and allows us to retrieve the coffee types using the supplementary table of the coffee types paper)
-    - **DRXIGRMS**: Grams (I believe this variable points us to *Total Coffee Intake* from the 2023 paper)
-
 #### Examination Data 
 From the Dietary Data we retrieved the following Data Files:
 - Lower Extremity Disease - Ankle Brachial Blood Pressure Index
@@ -41,4 +33,12 @@ From the Dietary Data we retrieved the following Data Files:
 
     From these variables we can create a variable for our disease:
     - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the 2011 paper)
+
+#### Dietary Data
+From the Dietary Data we retrieved the following Data Files:
+- Dietary Interview - Individual Foods 
+
+    Most important variables are: <br>
+    - **DRDIFDCD**: USDA food code (this code is equivalent to FNDDS and allows us to retrieve the coffee types using the supplementary table of the coffee types paper)
+    - **DRXIGRMS**: Grams (I believe this variable points us to *Total Coffee Intake* from the 2023 paper)
 

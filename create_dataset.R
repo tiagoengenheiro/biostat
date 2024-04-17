@@ -6,7 +6,7 @@ library("tidyverse") #already has tidy verse
 library("haven")
 library("dplyr")
 
-
+rm(list = ls())
 #Load Examination data (1999-2004)
 df_lexab_99_00=read_xpt("data/1999-00/Examination/LEXABPI.XPT")
 
@@ -30,3 +30,25 @@ df_lexab <- df_lexab %>% select(SEQN, LEXLABPI,LEXRABPI,PAD)
 dim(df_lexab)
 table(df_lexab$PAD)
 
+rm(list = ls())
+#Load Dietary Data (1999-2004)
+df_indiv_foods_99_00=read_xpt("data/1999-00/Dietary/DRXIFF.XPT")
+df_indiv_foods_01_02=read_xpt("data/2001-02/Dietary/DRXIFF_B.XPT")
+df_indiv_foods_03_04_1=read_xpt("data/2003-04/Dietary/DR1IFF_C.XPT") #there are two files for 2003-04 (2 days of dietary data)
+df_indiv_foods_03_04_2=read_xpt("data/2003-04/Dietary/DR2IFF_C.XPT")
+
+#For the same patient (SEQN) merge the rows on USDA food code by adding the grams consumed
+df_indiv_foods_99_00=df_indiv_foods_99_00 %>% group_by(SEQN,DRDIFDCD) %>% summarise(DRXIGRMS=sum(DRXIGRMS,na.rm=TRUE))
+df_indiv_foods_01_02=df_indiv_foods_01_02 %>% group_by(SEQN,DRDIFDCD) %>% summarise(DRXIGRMS=sum(DRXIGRMS,na.rm=TRUE))
+df_indiv_foods_03_04_1=df_indiv_foods_03_04_1 %>% group_by(SEQN,DR1IFDCD) %>% summarise(DR1IGRMS=sum(DR1IGRMS,na.rm=TRUE))
+df_indiv_foods_03_04_2=df_indiv_foods_03_04_2 %>% group_by(SEQN,DR2IFDCD) %>% summarise(DR2IGRMS=sum(DR2IGRMS,na.rm=TRUE))
+
+#Merge the two 2003-04 files
+df_indiv_foods_03_04=full_join(df_indiv_foods_03_04_1,df_indiv_foods_03_04_2,by=c("SEQN"="SEQN","DR1IFDCD"="DR2IFDCD"))
+df_indiv_foods_03_04$DRXIGRMS <- rowMeans(df_indiv_foods_03_04[,c("DR1IGRMS","DR2IGRMS")], na.rm = TRUE)
+df_indiv_foods_03_04 <- df_indiv_foods_03_04 %>% select(SEQN,DRDIFDCD=DR1IFDCD,DRXIGRMS)
+
+#Bind Dietary data
+df_indiv_foods <- bind_rows(df_indiv_foods_99_00, df_indiv_foods_01_02,df_indiv_foods_03_04)
+
+dim(df_indiv_foods)
