@@ -8,5 +8,6 @@ packrat/
 biostat.Rproj
 *(edited).pdf
 *.XPT
-docx/
 packrat/lib*/
+df_lexab.csv
+df_pad_coffee_types.csv
