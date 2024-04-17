@@ -25,17 +25,17 @@ From the links below it's possible to access all types of data:
 
 #### Dietary Data
 From the Dietary Data we retrieved the following Data Files:
-- Dietary Interview - Individual Foods
+- Dietary Interview - Individual Foods<br>
     Most important variables are:
     - DRDIFDCD: USDA food code (this code is equivalent to FNDDS and allows us to retrieve the coffee types using the supplementary table of the coffee types paper)
     - DRXIGRMS: Grams (I believe this variable points us to *Total Coffee Intake* from the 2023 paper)
 
 #### Examination Data 
 From the Dietary Data we retrieved the following Data Files:
-- Lower Extremity Disease - Ankle Brachial Blood Pressure Index
+- Lower Extremity Disease - Ankle Brachial Blood Pressure Index <br>
     Most important variables are:
     - LEXLABPI: Left ABPI
-    - LEXRABPI: Right ABPI
+    - LEXRABPI: Right ABPI <br>
     From these variables we can create a variable for our disease:
     - If one of these variables is lower or equal to 0.9, then the patient has PAD
 
