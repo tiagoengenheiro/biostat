@@ -1,5 +1,5 @@
 ## Report URL
-[Report(Overleaf)](https://www.overleaf.com/5239177249dncfbbvytmqw#74d3c6)
+[Overleaf link](https://www.overleaf.com/5239177249dncfbbvytmqw#74d3c6)
 
 ## Papers (available in /papers)
 (2011) - "Secondary Prevention and Mortality in Peripheral Arterial Disease"
@@ -10,7 +10,7 @@
 We are going to consider 3 data periods (1999-2000 + 2001-2002 + 2003-2004) which were the periods
 considered by the 2011 paper. We could use more periods, but these were the only periods that data was collected to detect our diease (Peripheral Arterial Disease or PAD) 
 
-### NHANES Data Index by Year:
+### NHANES Data (by Year):
 From the links below it's possible to access all types of data:
 * Demographics Data (here is the data for possible covariates age,sex,race, etc)
 * Dietary Data (here is the data for the coffee types)
@@ -40,5 +40,5 @@ From the Dietary Data we retrieved the following Data Files:
     - **LEXRABPI**: Right ABPI <br>
 
     From these variables we can create a variable for our disease:
-    - If one of these variables is lower or equal to 0.9, then the patient has PAD
+    - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the 2011 paper)
 
