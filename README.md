@@ -24,10 +24,10 @@ From the links below it's possible to access all types of data:
 [2003-04](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2003)
 
 #### Examination Data 
-From the Dietary Data we retrieved the following Data Files:
+From the Dietary Data we retrieved the following Data File:
 - Lower Extremity Disease - Ankle Brachial Blood Pressure Index
 
-    Most important variables are:
+    Most important variables:
     - **LEXLABPI**: Left ABPI
     - **LEXRABPI**: Right ABPI <br>
 
@@ -35,10 +35,41 @@ From the Dietary Data we retrieved the following Data Files:
     - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the 2011 paper)
 
 #### Dietary Data
-From the Dietary Data we retrieved the following Data Files:
+From the Dietary Data we retrieved the following Data File:
 - Dietary Interview - Individual Foods 
 
-    Most important variables are: <br>
+    Most important variables: <br>
     - **DRDIFDCD**: USDA food code (this code is equivalent to FNDDS and allows us to retrieve the coffee types using the supplementary table of the coffee types paper)
     - **DRXIGRMS**: Grams (I believe this variable points us to *Total Coffee Intake* from the 2023 paper)
 
+#### Demographics Data
+We retrieved the only available file in Demographics Data:
+- Demographic Variables & Sample Weights
+
+    Most important variables: <br>
+    - **RIAGENDR**: Sex
+    - **RIDAGEYR**: Age
+    - **RIDRETH1**: Race/Ethnicity
+    - **DMDEDUC**: Education Level
+    - **DMDMARTL**: Marital Status
+    - **INDFMPIR**: Poverty income ratio (PIR) - a ratio of family income to poverty threshold
+
+### Coffee Types Data 
+Source: This data was extracted from the 2023 paper (Table S1) and contains an association between an USDA/FNDDS food code and one or multiple types of coffee
+
+To obtain a comparable table with Table S2 in the 2023 paper, the following approach was conducted:
+1. Only one coffee register was considered per patient/respondent
+2. Several variables were criated according to match the ones in the paper:
+
+    - Total Coffee Intake(g/day): Coffee intake for each patient/day
+    - Sweetened Coffee: (Binary)
+    - Unsweetened Coffee: (Binary)
+    - Caffeineited Coffee: (Binary)
+    - Coffee with Fat: (Binary)
+    - Fat-free coffe: (Binary)
+    - Coffee with milk: (Binary)
+    - Coffee without milk: (Binary)
+    <br>
+    > **Note**: 
+    1 means it's TRUE, 0 means FALSE or missing.
+    If SweetenedCoffee is 1 then the coffee was sweet otherwise the coffee wasn't sweet or that information was not available. If it was not sweet it will be 1 in the Unsweetened Coffee, if it's 0 in both it means the sweet information was missing
