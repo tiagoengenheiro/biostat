@@ -55,7 +55,7 @@ We retrieved the only available file in Demographics Data:
     - **INDFMPIR**: Poverty income ratio (PIR) - a ratio of family income to poverty threshold
 
 ### Coffee Types Data 
-Source: This data was extracted from the 2023 paper (Table S1) and contains an association between an USDA/FNDDS food code and one or multiple types of coffee
+**Source**: This data was extracted from the 2023 paper (Table S1) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee
 
 To obtain a comparable table with Table S2 in the 2023 paper, the following approach was conducted:
 1. Only one coffee register was considered per patient/respondent
