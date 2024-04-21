@@ -77,8 +77,8 @@ To obtain a comparable table with Table S1 in the 2023 paper, the following appr
     <br>
     
     >**Note**:
-    **1 means TRUE, 0 means FALSE or missing**.
-    If SweetenedCoffee is 1 then the coffee was sweet otherwise the coffee wasn't sweet or that information was not available. If it was not sweet it will be 1 in the Unsweetened Coffee, if it's 0 in both varialbes it means the sweet information was missing. The same applies to the other variables
+    **1 means TRUE, 0 means FALSE or NA**.
+    If SweetenedCoffee is 1 then the coffee was sweet, otherwise the coffee was unsweet or that information was not available. If the coffee was not sweet (unsweet) it will be 1 in the UnsweetenedCoffee variable. If it's 0 in both variables it means the sweet information was missing. The same applies to the other variables.
 
 
 ### Dataset
