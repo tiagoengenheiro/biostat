@@ -62,13 +62,17 @@ coffee_types <- read.delim("data/coffee_types.tsv", header = TRUE, sep = "\t")
 
 coffee_types <- coffee_types %>% select(-FNDDS.food.description) #remove the description column
 
-coffee_types <- coffee_types[!duplicated(coffee_types$FNDDS.food.code),] #TODO check this better later
+coffee_types <- coffee_types[!duplicated(coffee_types$FNDDS.food.code),] #Remove the coffee types with the same code (duplicates)
 
 #Inner join the dietary data with the coffee types data to obtain the patients that consumed coffee
-df_indiv_foods_with_coffee_types <- df_indiv_foods %>% inner_join(coffee_types, by = c("DRDIFDCD" = "FNDDS.food.code"))
+df_indiv_foods_with_coffee_types <- df_indiv_foods %>% inner_join(coffee_types, by = c("DRDIFDCD" = "FNDDS.food.code")) 
+#8754 rows
 
-#we can choose the one with the highest grams consumed or do some other pre processing, for now it just takes out the duplicates
-df_indiv_foods_with_coffee_types<- df_indiv_foods_with_coffee_types[!duplicated(df_indiv_foods_with_coffee_types$SEQN),] #TODO check this better later
+#for each seqn we choose the DRDIFDCD with the highest grams consumed
+df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>% group_by(SEQN) %>% slice(which.max(DRXIGRMS)) #7735 rows
+
+
+dim(df_indiv_foods_with_coffee_types) #needs to be 7735 which are the rows without duplicates
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>%
 mutate(
         TotalCoffeeIntake=DRXIGRMS,
@@ -80,12 +84,15 @@ mutate(
         FatFreeCoffee=ifelse(Fatty.status==0,1,0),
         CoffeeWithMilk=ifelse(Milk.containing.status==1,1,0),
         CoffeeWithoutMilk=ifelse(Milk.containing.status==0,1,0)
-    ) #create a new column with 1 for coffee consumers
+    )
 
 
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>% 
 select(SEQN,TotalCoffeeIntake,SweetenedCoffee,UnsweetenedCoffee,CaffeinatedCoffee,DecaffeinatedCoffee,CoffeeWithFat,FatFreeCoffee,CoffeeWithMilk,CoffeeWithoutMilk)
 
+#Import lexab
+
+df_lexab <- read.csv("data/df_lexab.csv")
 #Merge the dietary data with the lexab data (Left join because we only want the patients that have PAD)
 df_pad_coffee_types<- left_join(df_lexab, df_indiv_foods_with_coffee_types, by = "SEQN")
 
@@ -108,7 +115,7 @@ df_demo <- df_demo %>% select(SEQN,RIAGENDR, RIDAGEYR, RIDRETH1,DMDEDUC,DMDMARTL
 #Load the PAD and coffee types data
 #df_pad_coffee_types <- read.csv("data/df_pad_coffee_types.csv")
 
-#Merge the demographics data with the PAD and coffee types data (Left join because we only want the patients that have PAD)
+#Merge the demographics data with the PAD and coffee types data (Left join because we only want the patients that have PAD variable)
 df_final<- left_join(df_pad_coffee_types, df_demo, by = "SEQN")
 
 #Save the dataset

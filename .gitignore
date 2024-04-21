@@ -11,3 +11,4 @@ biostat.Rproj
 packrat/lib*/
 df_lexab.csv
 df_pad_coffee_types.csv
+df_indiv_foods_with_coffee_types.csv
