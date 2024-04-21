@@ -63,12 +63,13 @@ From the Examination Data we retrieved the following Data File:
 
 To obtain a comparable table with Table S1 in the 2023 paper, the following approach was conducted:
 1. Only one coffee register was considered per patient/respondent (SEQN)
-2. Several variables were criated to match the ones in the paper:
+2. Several variables were created to match the ones in the paper:
 
     - **Total Coffee Intake(g/day)**: Coffee intake for each patient (grams/day)
     - **Sweetened Coffee**: (Binary)
     - **Unsweetened Coffee**: (Binary)
     - **Caffeineited Coffee**: (Binary)
+    - **Decaffeinated Coffee**: (Binary)
     - **Coffee with Fat**: (Binary)
     - **Fat-free coffe**: (Binary)
     - **Coffee with milk**: (Binary)

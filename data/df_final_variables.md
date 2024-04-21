@@ -30,14 +30,15 @@ If this document is not rendered already and you want to it rendered choose one 
 
 ## Binary Variables
 - **PAD** (Disease)
+- **Coffee** (Patient consumed coffee (1) or not (0))
 - **Sweetened Coffee** (see **Note** below for these variables) 
 - **Unsweetened Coffee** (see **Note** below for these variables)
 - **Caffeineited Coffee** (see **Note** below for these variables)
+- **Decaffeinated Coffee**: (see **Note** below for these variables)
 - **Coffee with Fat** (see **Note** below for these variables)
 - **FatFree coffee** (see **Note** below for these variables)
 - **Coffee with milk** (see **Note** below for these variables)
 - **Coffee without milk** (see **Note** below for these variables)
-- **Coffee** (Patient consumed coffee (1) or not (0))
 
     <br>
 
