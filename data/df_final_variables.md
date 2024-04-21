@@ -30,11 +30,17 @@ If this document is not rendered already and you want to it rendered choose one 
 
 ## Binary Variables
 - **PAD** (Disease)
-- **Sweetened Coffee** (see [README](../README.md#coffee-types-data) for these variables) 
-- **Unsweetened Coffee** (see [README](../README.md#coffee-types-data) for these variables)
-- **Caffeineited Coffee** (see [README](../README.md#coffee-types-data) for these variables)
-- **Coffee with Fat** (see [README](../README.md#coffee-types-data) for these variables)
-- **FatFree coffee** (see [README](../README.md#coffee-types-data) for these variables)
-- **Coffee with milk** (see [README](../README.md#coffee-types-data) for these variables)
-- **Coffee without milk** (see [README](../README.md#coffee-types-data) for these variables)
+- **Sweetened Coffee** (see **Note** below for these variables) 
+- **Unsweetened Coffee** (see **Note** below for these variables)
+- **Caffeineited Coffee** (see **Note** below for these variables)
+- **Coffee with Fat** (see **Note** below for these variables)
+- **FatFree coffee** (see **Note** below for these variables)
+- **Coffee with milk** (see **Note** below for these variables)
+- **Coffee without milk** (see **Note** below for these variables)
 - **Coffee** (Patient consumed coffee (1) or not (0))
+
+    <br>
+
+    >**Note**:
+    **1 means TRUE, 0 means FALSE or NA**.
+    If SweetenedCoffee is 1 then the coffee was sweet, otherwise the coffee was unsweet or that information was not available. If the coffee was not sweet (unsweet) it will be 1 in the UnsweetenedCoffee variable. If it's 0 in both variables it means the sweet information was missing. The same applies to the other variables.

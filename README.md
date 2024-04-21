@@ -66,20 +66,13 @@ To obtain a comparable table with Table S1 in the 2023 paper, the following appr
 2. Several variables were criated to match the ones in the paper:
 
     - **Total Coffee Intake(g/day)**: Coffee intake for each patient (grams/day)
-    - **Sweetened Coffee**: (Binary, see note below)
-    - **Unsweetened Coffee**: (Binary, see note below)
-    - **Caffeineited Coffee**: (Binary, see note below)
-    - **Coffee with Fat**: (Binary, see note below)
-    - **Fat-free coffe**: (Binary, see note below)
-    - **Coffee with milk**: (Binary, see note below)
-    - **Coffee without milk**: (Binary, see note below)
-
-    <br>
-    
-    >**Note**:
-    **1 means TRUE, 0 means FALSE or NA**.
-    If SweetenedCoffee is 1 then the coffee was sweet, otherwise the coffee was unsweet or that information was not available. If the coffee was not sweet (unsweet) it will be 1 in the UnsweetenedCoffee variable. If it's 0 in both variables it means the sweet information was missing. The same applies to the other variables.
-
+    - **Sweetened Coffee**: (Binary)
+    - **Unsweetened Coffee**: (Binary)
+    - **Caffeineited Coffee**: (Binary)
+    - **Coffee with Fat**: (Binary)
+    - **Fat-free coffe**: (Binary)
+    - **Coffee with milk**: (Binary)
+    - **Coffee without milk**: (Binary)
 
 ### Dataset
 
