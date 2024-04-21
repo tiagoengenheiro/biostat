@@ -60,7 +60,7 @@ We retrieved the only available file in Demographics Data:
 **Source**: This data was extracted from the 2023 paper (Table S1) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee.
 
 To obtain a comparable table with Table S1 in the 2023 paper, the following approach was conducted:
-1. Only one coffee register was considered per patient/respondent
+1. Only one coffee register was considered per patient/respondent (SEQN)
 2. Several variables were criated to match the ones in the paper:
 
     - **Total Coffee Intake(g/day)**: Coffee intake for each patient (grams/day)
@@ -74,4 +74,7 @@ To obtain a comparable table with Table S1 in the 2023 paper, the following appr
     
     >**Note**:
     **1 means TRUE, 0 means FALSE or missing**.
-    If SweetenedCoffee is 1 then the coffee was sweet otherwise the coffee wasn't sweet or that information was not available. If it was not sweet it will be 1 in the Unsweetened Coffee, if it's 0 in both it means the sweet information was missing
+    If SweetenedCoffee is 1 then the coffee was sweet otherwise the coffee wasn't sweet or that information was not available. If it was not sweet it will be 1 in the Unsweetened Coffee, if it's 0 in both varialbes it means the sweet information was missing. The same applies to the other variables
+
+### Dataset
+The final Dataset (data/**df_final.csv**) contains these variables and some more, you can find all variables and descriptions in [data/df_final_variables.md](data/df_final_variables.md)
