@@ -1,5 +1,10 @@
 # Variables Description
 
+### Render this document
+If you want to see this document rendered choose one of the options:
+* (a) Download a markdown extension in VS Code to render the md file (I'm using Markdown Preview Enhanced). After installation an icon (a window with a magnifying glass) will appear in the top right corner 
+* (b) [See it directly in GitHub](https://github.com/tiagoengenheiro/biostat/blob/main/data/df_final_variables.md)
+
 ## Numeric Variables
 - **SEQN**: Sequence Respondent Number (primary key)
 - **LEXLABPI**: Left ABPI (Left ankle-brachial pressure index)

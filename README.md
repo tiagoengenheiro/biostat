@@ -12,7 +12,7 @@ considered by the 2011 paper. We could use more periods, but these were the only
 
 ### NHANES Data (by Year):
 
- - [1999-00](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=1999)
+- [1999-00](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=1999)
 
 - [2001-02](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2001)
 
@@ -23,6 +23,7 @@ From the links above it's possible to access all types of data:
 * **Dietary Data** (here is the data for the coffee types)
 * **Examination Data** (here is the data to identify our disease)
 * **Laboratory Data** (here would be the data for the coffee metabolites but this data is not available in our 1999-2004 interval)
+* **etc** (no sot relevant for us)
 
 #### Examination Data
 From the Dietary Data we retrieved the following Data File:
