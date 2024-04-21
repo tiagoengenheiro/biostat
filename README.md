@@ -76,5 +76,8 @@ To obtain a comparable table with Table S1 in the 2023 paper, the following appr
     **1 means TRUE, 0 means FALSE or missing**.
     If SweetenedCoffee is 1 then the coffee was sweet otherwise the coffee wasn't sweet or that information was not available. If it was not sweet it will be 1 in the Unsweetened Coffee, if it's 0 in both varialbes it means the sweet information was missing. The same applies to the other variables
 
+
 ### Dataset
+
+#### Variables
 The final Dataset (data/**df_final.csv**) contains these variables and some more, you can find all variables and descriptions in [data/df_final_variables.md](data/df_final_variables.md)
