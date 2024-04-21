@@ -73,7 +73,9 @@ To obtain a comparable table with Table S1 in the 2023 paper, the following appr
     - **Fat-free coffe**: (Binary, see note below)
     - **Coffee with milk**: (Binary, see note below)
     - **Coffee without milk**: (Binary, see note below)
+
     <br>
+    
     >**Note**:
     **1 means TRUE, 0 means FALSE or missing**.
     If SweetenedCoffee is 1 then the coffee was sweet otherwise the coffee wasn't sweet or that information was not available. If it was not sweet it will be 1 in the Unsweetened Coffee, if it's 0 in both varialbes it means the sweet information was missing. The same applies to the other variables
