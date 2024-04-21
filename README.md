@@ -48,14 +48,14 @@ From the Dietary Data we retrieved the following Data File:
     - **DRXIGRMS**: Grams (I believe this variable points us to *Total Coffee Intake* from the 2023 paper)
 
 #### Examination Data
-From the Dietary Data we retrieved the following Data File:
+From the Examination Data we retrieved the following Data File:
 - **Lower Extremity Disease** - Ankle Brachial Blood Pressure Index
 
     Most important variables:
     - **LEXLABPI**: Left ABPI
     - **LEXRABPI**: Right ABPI <br>
 
-    From these variables we can create a variable for our disease (PAD):
+    From these variables we created a variable for our disease (PAD):
     - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the 2011 paper)
 
 ### Coffee Types Data 
