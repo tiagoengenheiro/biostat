@@ -29,19 +29,9 @@ If this document is not rendered already and you want to it rendered choose one 
     - [See Documentation](https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/DEMO.htm#DMDMARTL)
 
 ## Binary Variables
-- **PAD** (Disease)
-- **Coffee** (Patient consumed coffee (1) or not (0))
-- **Sweetened Coffee** (see **Note** below for these variables) 
-- **Unsweetened Coffee** (see **Note** below for these variables)
-- **Caffeineited Coffee** (see **Note** below for these variables)
-- **Decaffeinated Coffee**: (see **Note** below for these variables)
-- **Coffee with Fat** (see **Note** below for these variables)
-- **FatFree coffee** (see **Note** below for these variables)
-- **Coffee with milk** (see **Note** below for these variables)
-- **Coffee without milk** (see **Note** below for these variables)
-
-    <br>
-
-    >**Note**:
-    **1 means TRUE, 0 means FALSE or NA**.
-    If SweetenedCoffee is 1 then the coffee was sweet, otherwise the coffee was unsweet or that information was not available. If the coffee was not sweet (unsweet) it will be 1 in the UnsweetenedCoffee variable. If it's 0 in both variables it means the sweet information was missing. The same applies to the other variables.
+- **PAD**: Disease
+- **Coffee**: Patient consumed coffee (1) or not (0)
+- **CaffeinatedStatus**: Caffeinated Coffee(1) | Decaffeited Coffee(0)
+- **SugaryStatus**: Sweetened Coffee(1) | Unsweetened Coffee(0)
+- **FattyStatus**: Coffee with Fat(1) | FatFree Coffee(0)
+- **MilkContainingStatus**: Coffee with milk (1) | Coffee without milk(0)

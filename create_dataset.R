@@ -76,21 +76,20 @@ dim(df_indiv_foods_with_coffee_types) #needs to be 7735 which are the rows witho
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>%
 mutate(
         TotalCoffeeIntake=DRXIGRMS,
-        SweetenedCoffee=ifelse(Sugary.status=="1",1,0),
-        UnsweetenedCoffee=ifelse(Sugary.status=="0",1,0),
-        CaffeinatedCoffee=ifelse(Caffeinated.status==1,1,0),
-        DecaffeinatedCoffee=ifelse(Caffeinated.status==0,1,0),
-        CoffeeWithFat=ifelse(Fatty.status==1,1,0),
-        FatFreeCoffee=ifelse(Fatty.status==0,1,0),
-        CoffeeWithMilk=ifelse(Milk.containing.status==1,1,0),
-        CoffeeWithoutMilk=ifelse(Milk.containing.status==0,1,0)
+        CaffeinatedStatus=Caffeinated.status,
+        SugaryStatus=Sugary.status,
+        FattyStatus=Fatty.status,
+        MilkContainingStatus=Milk.containing.status,
     )
 
 
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>% 
-select(SEQN,TotalCoffeeIntake,SweetenedCoffee,UnsweetenedCoffee,CaffeinatedCoffee,DecaffeinatedCoffee,CoffeeWithFat,FatFreeCoffee,CoffeeWithMilk,CoffeeWithoutMilk)
+    select(SEQN, TotalCoffeeIntake, CaffeinatedStatus, SugaryStatus, FattyStatus, MilkContainingStatus)
 
-#Import lexab
+#Replace - with NA
+df_indiv_foods_with_coffee_types[df_indiv_foods_with_coffee_types == "-"] <- NA
+
+df_indiv_foods_with_coffee_types
 
 df_lexab <- read.csv("data/df_lexab.csv")
 #Merge the dietary data with the lexab data (Left join because we only want the patients that have PAD)
@@ -120,3 +119,6 @@ df_final<- left_join(df_pad_coffee_types, df_demo, by = "SEQN")
 
 #Save the dataset
 write.csv(df_final, "data/df_final.csv", row.names = FALSE)
+
+
+
