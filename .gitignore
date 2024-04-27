@@ -9,6 +9,5 @@ biostat.Rproj
 *(edited).pdf
 *.XPT
 packrat/lib*/
-df_lexab.csv
-df_pad_coffee_types.csv
-df_indiv_foods_with_coffee_types.csv
+*.csv
+!df_final.csv
