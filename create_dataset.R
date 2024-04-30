@@ -41,45 +41,19 @@ df_indiv_foods_01_02=read_xpt("data/2001-02/Dietary/DRXIFF_B.XPT")
 df_indiv_foods_03_04_1=read_xpt("data/2003-04/Dietary/DR1IFF_C.XPT") #there are two files for 2003-04 (2 days of dietary data)
 df_indiv_foods_03_04_2=read_xpt("data/2003-04/Dietary/DR2IFF_C.XPT")
 
-#For the same patient (SEQN) merge the rows on USDA food code by adding the grams consumed and by saving the weight of the patient (WTDR4YR)
-
-
-df_indiv_foods_99_00=df_indiv_foods_99_00 %>% group_by(SEQN,DRDIFDCD) %>% summarise(DRXIGRMS=sum(DRXIGRMS,na.rm=TRUE),WTDRD=WTDR4YR)
-df_indiv_foods_01_02=df_indiv_foods_01_02 %>% group_by(SEQN,DRDIFDCD) %>% summarise(DRXIGRMS=sum(DRXIGRMS,na.rm=TRUE),WTDRD=WTDR4YR)
-df_indiv_foods_03_04_1=df_indiv_foods_03_04_1 %>% group_by(SEQN,DR1IFDCD) %>% summarise(DR1IGRMS=sum(DR1IGRMS,na.rm=TRUE),WTDRD1=WTDRD1)
-df_indiv_foods_03_04_2=df_indiv_foods_03_04_2 %>% group_by(SEQN,DR2IFDCD) %>% summarise(DR2IGRMS=sum(DR2IGRMS,na.rm=TRUE),WTDRD2=WTDR2D)
-
-#Select only the columns we need for the 2003-04 files
-df_indiv_foods_03_04_1 <- df_indiv_foods_03_04_1 %>% select(SEQN,DR1IFDCD=DR1IFDCD,DR1IGRMS,WTDRD1=WTDRD1) #rename the columns to match the other datasets
-df_indiv_foods_03_04_2 <- df_indiv_foods_03_04_2 %>% select(SEQN,DR2IFDCD=DR2IFDCD,DR2IGRMS,WTDRD2=WTDRD2) #rename the columns to match the other datasets
-
-#Save the datasets of 2003-04
-#write.csv(df_indiv_foods_03_04_1, "data/df_indiv_foods_03_04_1.csv", row.names = FALSE)
-#write.csv(df_indiv_foods_03_04_2, "data/df_indiv_foods_03_04_2.csv", row.names = FALSE)
+#For the same patient (SEQN) merge the rows on USDA food code by adding the grams consumed
+df_indiv_foods_99_00=df_indiv_foods_99_00 %>% group_by(SEQN,DRDIFDCD) %>% summarise(DRXIGRMS=sum(DRXIGRMS,na.rm=TRUE))
+df_indiv_foods_01_02=df_indiv_foods_01_02 %>% group_by(SEQN,DRDIFDCD) %>% summarise(DRXIGRMS=sum(DRXIGRMS,na.rm=TRUE))
+df_indiv_foods_03_04_1=df_indiv_foods_03_04_1 %>% group_by(SEQN,DR1IFDCD) %>% summarise(DR1IGRMS=sum(DR1IGRMS,na.rm=TRUE))
+df_indiv_foods_03_04_2=df_indiv_foods_03_04_2 %>% group_by(SEQN,DR2IFDCD) %>% summarise(DR2IGRMS=sum(DR2IGRMS,na.rm=TRUE))
 
 #Merge the two 2003-04 files by doing the average of the grams per day
 df_indiv_foods_03_04=full_join(df_indiv_foods_03_04_1,df_indiv_foods_03_04_2,by=c("SEQN"="SEQN","DR1IFDCD"="DR2IFDCD"))
-#Save the result
-#write.csv(df_indiv_foods_03_04, "data/df_indiv_foods_03_04.csv", row.names = FALSE)
-
-df_indiv_foods_03_04$DRXIGRMS <- rowMeans(df_indiv_foods_03_04[,c("DR1IGRMS","DR2IGRMS")], na.rm = TRUE) 
-
-#Get the mean value of the weight of the patient
-df_indiv_foods_03_04$WTDRD <- rowMeans(df_indiv_foods_03_04[,c("WTDRD1","WTDRD2")], na.rm = TRUE)
-
-
-#Select the columns we need
-df_indiv_foods_03_04 <- df_indiv_foods_03_04 %>% select(SEQN,DRDIFDCD=DR1IFDCD,DRXIGRMS,WTDRD=WTDRD) #rename the columns to match the other datasets
-
-#Check for missing values
-df_indiv_foods_03_04[is.na(df_indiv_foods_03_04$WTDRD),]
-#write.csv(df_indiv_foods_03_04, "data/df_indiv_foods_03_04.csv", row.names = FALSE)
+df_indiv_foods_03_04$DRXIGRMS <- rowMeans(df_indiv_foods_03_04[,c("DR1IGRMS","DR2IGRMS")], na.rm = TRUE)
+df_indiv_foods_03_04 <- df_indiv_foods_03_04 %>% select(SEQN,DRDIFDCD=DR1IFDCD,DRXIGRMS)
 
 #Bind Dietary data
 df_indiv_foods <- bind_rows(df_indiv_foods_99_00, df_indiv_foods_01_02,df_indiv_foods_03_04)
-
-#Remove the missing values
-df_indiv_foods <- df_indiv_foods %>% drop_na()
 
 
 
@@ -90,9 +64,9 @@ coffee_types <- coffee_types %>% select(-FNDDS.food.description) #remove the des
 
 coffee_types <- coffee_types[!duplicated(coffee_types$FNDDS.food.code),] #Remove the coffee types with the same code (duplicates)
 
-#Left join the dietary data with the coffee types data to obtain the patients that consumed coffee or not consumed coffee
-df_indiv_foods_with_coffee_types <- df_indiv_foods %>% left_join(coffee_types, by = c("DRDIFDCD" = "FNDDS.food.code")) 
-
+#Inner join the dietary data with the coffee types data to obtain the patients that consumed coffee
+df_indiv_foods_with_coffee_types <- df_indiv_foods %>% inner_join(coffee_types, by = c("DRDIFDCD" = "FNDDS.food.code")) 
+#8754 rows
 
 #for each seqn we choose the DRDIFDCD with the highest grams consumed
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>% group_by(SEQN) %>% slice(which.max(DRXIGRMS)) #7735 rows
@@ -110,19 +84,16 @@ mutate(
 
 
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>% 
-    select(SEQN, WTDRD,TotalCoffeeIntake, CaffeinatedStatus, SugaryStatus, FattyStatus, MilkContainingStatus)
+    select(SEQN, TotalCoffeeIntake, CaffeinatedStatus, SugaryStatus, FattyStatus, MilkContainingStatus)
 
 #Replace - with NA
 df_indiv_foods_with_coffee_types[df_indiv_foods_with_coffee_types == "-"] <- NA
 
 df_indiv_foods_with_coffee_types
 
-#Save the dataset
-write.csv(df_indiv_foods_with_coffee_types, "data/df_indiv_foods_with_coffee_types.csv", row.names = FALSE)
-
 df_lexab <- read.csv("data/df_lexab.csv")
 #Merge the dietary data with the lexab data (Left join because we only want the patients that have PAD)
-df_pad_coffee_types<- inner_join(df_lexab, df_indiv_foods_with_coffee_types, by = "SEQN")
+df_pad_coffee_types<- left_join(df_lexab, df_indiv_foods_with_coffee_types, by = "SEQN")
 
 
 #create a new column with 1 for coffee consumers
@@ -144,7 +115,7 @@ df_demo <- df_demo %>% select(SEQN,RIAGENDR, RIDAGEYR, RIDRETH1,DMDEDUC,DMDMARTL
 #df_pad_coffee_types <- read.csv("data/df_pad_coffee_types.csv")
 
 #Merge the demographics data with the PAD and coffee types data (Left join because we only want the patients that have PAD variable)
-df_final<- inner_join(df_pad_coffee_types, df_demo, by = "SEQN")
+df_final<- left_join(df_pad_coffee_types, df_demo, by = "SEQN")
 
 #Save the dataset
 write.csv(df_final, "data/df_final.csv", row.names = FALSE)
