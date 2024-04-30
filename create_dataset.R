@@ -7,7 +7,7 @@ library("haven")
 library("dplyr")
 
 rm(list = ls())
-#Load Examination data (1999-2004)
+#Load Examination data (1999-2004) for Ankle Brachial Index (ABI) 
 df_lexab_99_00=read_xpt("data/1999-00/Examination/LEXABPI.XPT")
 
 df_lexab_01_02=read_xpt("data/2001-02/Examination/LEXAB_B.XPT")
@@ -17,11 +17,19 @@ df_lexab_03_04=read_xpt("data/2003-04/Examination/LEXAB_C.XPT")
 #Bind Examination data (bind_rows merges all rows and keeps the union of the columns - https://www.statology.org/dplyr-bind_rows-bind_cols/)
 df_lexab <- bind_rows(df_lexab_99_00, df_lexab_01_02,df_lexab_03_04)
 
+#Remove rows with missing values on LEXLABPI or on LEXRABPI -> 7571
+df_lexab <- df_lexab %>% filter(!is.na(LEXLABPI) | !is.na(LEXRABPI))
+dim(df_lexab)[1]==7571
+#Exclude the ones with LEXLABPI or LEXRABPI > 1.40
+df_lexab <- df_lexab %>% filter(LEXLABPI<1.40 & LEXRABPI<1.40)
+
+dim(df_lexab)[1]==6716
 #Create PAD variable
 df_lexab$PAD <- ifelse(df_lexab$LEXLABPI<=0.9 | df_lexab$LEXRABPI<=0.9,1,0)
+#Count how many rows with PAD=1
+table(df_lexab$PAD)
 
-#Delete rows (patients) with missing PAD
-df_lexab <- df_lexab %>% filter(!is.na(PAD))
+
 
 #Create a new dataset with only the variables we need
 df_lexab <- df_lexab %>% select(SEQN, LEXLABPI,LEXRABPI,PAD)
@@ -55,7 +63,8 @@ df_indiv_foods_03_04 <- df_indiv_foods_03_04 %>% select(SEQN,DRDIFDCD=DR1IFDCD,D
 #Bind Dietary data
 df_indiv_foods <- bind_rows(df_indiv_foods_99_00, df_indiv_foods_01_02,df_indiv_foods_03_04)
 
-
+#Count how many distinct SEQN are in the df_indiv_foods dataset
+length(unique(df_indiv_foods$SEQN))
 
 #Load the USDA food codes for coffee types
 coffee_types <- read.delim("data/coffee_types.tsv", header = TRUE, sep = "\t")
@@ -65,8 +74,7 @@ coffee_types <- coffee_types %>% select(-FNDDS.food.description) #remove the des
 coffee_types <- coffee_types[!duplicated(coffee_types$FNDDS.food.code),] #Remove the coffee types with the same code (duplicates)
 
 #Inner join the dietary data with the coffee types data to obtain the patients that consumed coffee
-df_indiv_foods_with_coffee_types <- df_indiv_foods %>% inner_join(coffee_types, by = c("DRDIFDCD" = "FNDDS.food.code")) 
-#8754 rows
+df_indiv_foods_with_coffee_types <- df_indiv_foods %>% inner_join(coffee_types, by = c("DRDIFDCD" = "FNDDS.food.code"))
 
 #for each seqn we choose the DRDIFDCD with the highest grams consumed
 df_indiv_foods_with_coffee_types <- df_indiv_foods_with_coffee_types %>% group_by(SEQN) %>% slice(which.max(DRXIGRMS)) #7735 rows
@@ -92,6 +100,13 @@ df_indiv_foods_with_coffee_types[df_indiv_foods_with_coffee_types == "-"] <- NA
 df_indiv_foods_with_coffee_types
 
 df_lexab <- read.csv("data/df_lexab.csv")
+
+#From the lexab select the ones that 
+#Select only the SEQN are present in the df_lexab dataset
+df_lexab <- df_lexab %>% filter(SEQN %in% df_indiv_foods$SEQN)
+dim(df_lexab)[1]==6565
+
+
 #Merge the dietary data with the lexab data (Left join because we only want the patients that have PAD)
 df_pad_coffee_types<- left_join(df_lexab, df_indiv_foods_with_coffee_types, by = "SEQN")
 
@@ -115,7 +130,7 @@ df_demo <- df_demo %>% select(SEQN,RIAGENDR, RIDAGEYR, RIDRETH1,DMDEDUC,DMDMARTL
 #df_pad_coffee_types <- read.csv("data/df_pad_coffee_types.csv")
 
 #Merge the demographics data with the PAD and coffee types data (Left join because we only want the patients that have PAD variable)
-df_final<- left_join(df_pad_coffee_types, df_demo, by = "SEQN")
+df_final<- inner_join(df_pad_coffee_types, df_demo, by = "SEQN")
 
 #Save the dataset
 write.csv(df_final, "data/df_final.csv", row.names = FALSE)
