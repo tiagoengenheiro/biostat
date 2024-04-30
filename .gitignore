@@ -11,3 +11,4 @@ biostat.Rproj
 packrat/lib*/
 *.csv
 !df_final.csv
+*ex.R

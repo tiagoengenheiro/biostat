@@ -18,7 +18,7 @@ library(readxl)
 
 
 #reading data
-data <- read.csv("df_final.csv")
+data <- read.csv("data/df_final.csv")
 head(data)
 
 #dataset info
@@ -87,7 +87,7 @@ summary(data)
 ##################################################################################################
 
 
-model_full = glm(PAD ~  TotalCoffeeIntake + CaffeinatedStatus + SugaryStatus + FattyStatus + MilkContainingStatus,family=binomial(link = "logit"),data)
+model_full = glm(PAD ~  TotalCoffeeIntake + CaffeinatedStatus + SugaryStatus + FattyStatus + MilkContainingStatus,family = "binomial",data=data,weights = )
 summary(model_full)
 model_step = stats::step(model_full, direction = "both")
 summary(model_step)
