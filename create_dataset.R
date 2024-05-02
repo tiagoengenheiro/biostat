@@ -183,7 +183,8 @@ dsn <- bind_rows(dsn_99_00, dsn_01_02,dsn_03_04)
 df_final_mortality <- inner_join(df_final, dsn, by = c("SEQN"="seqn"))
 
 #Filter only the patients that are deceased
-df_final_mortality <- df_final_mortality %>% filter(mortstat==1)
+df_final_mortality <- df_final_mortality %>% filter(PAD==1)
+
+#Filter 
 #Save the dataset
 write.csv(df_final_mortality, "data/df_final_mortality.csv", row.names = FALSE)
-
