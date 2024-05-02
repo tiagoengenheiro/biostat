@@ -35,7 +35,7 @@ table(df_lexab$PAD)
 df_lexab <- df_lexab %>% select(SEQN, LEXLABPI,LEXRABPI,PAD)
 
 #Save the dataset
-write.csv(df_lexab, "data/df_lexab.csv", row.names = FALSE)
+#write.csv(df_lexab, "data/df_lexab.csv", row.names = FALSE)
 #Check the dataset size and PAD distribution
 dim(df_lexab)
 table(df_lexab$PAD)
@@ -63,8 +63,6 @@ df_indiv_foods_03_04 <- df_indiv_foods_03_04 %>% select(SEQN,DRDIFDCD=DR1IFDCD,D
 #Bind Dietary data
 df_indiv_foods <- bind_rows(df_indiv_foods_99_00, df_indiv_foods_01_02,df_indiv_foods_03_04)
 
-#Count how many distinct SEQN are in the df_indiv_foods dataset
-length(unique(df_indiv_foods$SEQN))
 
 #Load the USDA food codes for coffee types
 coffee_types <- read.delim("data/coffee_types.tsv", header = TRUE, sep = "\t")
@@ -101,20 +99,19 @@ df_indiv_foods_with_coffee_types
 
 df_lexab <- read.csv("data/df_lexab.csv")
 
-#From the lexab select the ones that 
-#Select only the SEQN are present in the df_lexab dataset
+#Select only the SEQN that are present in the df_indiv_foods
 df_lexab <- df_lexab %>% filter(SEQN %in% df_indiv_foods$SEQN)
 dim(df_lexab)[1]==6565
 
 
-#Merge the dietary data with the lexab data (Left join because we only want the patients that have PAD)
+#Merge the dietary data with the lexab data (Left join because we want patients that did and did not consume coffee)
 df_pad_coffee_types<- left_join(df_lexab, df_indiv_foods_with_coffee_types, by = "SEQN")
 
 
 #create a new column with 1 for coffee consumers
 df_pad_coffee_types$Coffee = ifelse(is.na(df_pad_coffee_types$TotalCoffeeIntake),0,1) 
 #Save the dataset
-write.csv(df_pad_coffee_types, "data/df_pad_coffee_types.csv", row.names = FALSE)
+#write.csv(df_pad_coffee_types, "data/df_pad_coffee_types.csv", row.names = FALSE)
 
 #Load Demographics Data (1999-2004)
 df_demo_99_00=read_xpt("data/1999-00/Demographics/DEMO.XPT")
@@ -135,5 +132,56 @@ df_final<- inner_join(df_pad_coffee_types, df_demo, by = "SEQN")
 #Save the dataset
 write.csv(df_final, "data/df_final.csv", row.names = FALSE)
 
+#Load Mortality Data (1999-2004)
 
+dsn_99_00 <- read_fwf(file="data/1999-00/Mortality/NHANES_1999_2000_MORT_2019_PUBLIC.dat",
+                col_types = "iiiiiiii",
+                fwf_cols(seqn = c(1,6),
+                         eligstat = c(15,15),
+                         mortstat = c(16,16),
+                         ucod_leading = c(17,19),
+                         diabetes = c(20,20),
+                         hyperten = c(21,21),
+                         permth_int = c(43,45),
+                         permth_exm = c(46,48)
+                ),
+                na = c("", ".")
+)
+
+dsn_01_02 <- read_fwf(file="data/2001-02/Mortality/NHANES_2001_2002_MORT_2019_PUBLIC.dat",
+                col_types = "iiiiiiii",
+                fwf_cols(seqn = c(1,6),
+                         eligstat = c(15,15),
+                         mortstat = c(16,16),
+                         ucod_leading = c(17,19),
+                         diabetes = c(20,20),
+                         hyperten = c(21,21),
+                         permth_int = c(43,45),
+                         permth_exm = c(46,48)
+                ),
+                na = c("", ".")
+)
+
+dsn_03_04 <- read_fwf(file="data/2003-04/Mortality/NHANES_2003_2004_MORT_2019_PUBLIC.dat",
+                col_types = "iiiiiiii",
+                fwf_cols(seqn = c(1,6),
+                         eligstat = c(15,15),
+                         mortstat = c(16,16),
+                         ucod_leading = c(17,19),
+                         diabetes = c(20,20),
+                         hyperten = c(21,21),
+                         permth_int = c(43,45),
+                         permth_exm = c(46,48)
+                ),
+                na = c("", ".")
+)
+
+#Bind Mortality data
+dsn <- bind_rows(dsn_99_00, dsn_01_02,dsn_03_04)
+
+#Inner join with df_final
+df_final_mortality <- inner_join(df_final, dsn, by = c("SEQN"="seqn"))
+
+#Save the dataset
+write.csv(df_final_mortality, "data/df_final_mortality.csv", row.names = FALSE)
 
