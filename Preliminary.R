@@ -34,7 +34,7 @@ colSums(is.na(data))
 
 # Replace NANs in types of coffee with zeros, if the person didn't drink any coffee at all
 data$TotalCoffeeIntake <- ifelse(is.na(data$TotalCoffeeIntake) & data$Coffee == 0, 0, data$TotalCoffeeIntake)
-data$CaffeinatedStatus <- ifelse(is.na(data$CaffeinatedStatus) & data$Coffee == 0, 0, data$CaffeinatedStatus)
+#data$CaffeinatedStatus <- ifelse(is.na(data$CaffeinatedStatus) & data$Coffee == 0, 0, data$CaffeinatedStatus)
 #data$SugaryStatus <- ifelse(is.na(data$SugaryStatus) & data$Coffee == 0, 0, data$SugaryStatus)
 #data$FattyStatus <- ifelse(is.na(data$FattyStatus) & data$Coffee == 0, 0, data$FattyStatus)
 #data$MilkContainingStatus <- ifelse(is.na(data$MilkContainingStatus) & data$Coffee == 0, 0, data$MilkContainingStatus)
@@ -57,7 +57,9 @@ data <- data%>%
          CaffeinatedStatus = as.factor(CaffeinatedStatus),
          SugaryStatus = as.factor(SugaryStatus),
          FattyStatus = as.factor(FattyStatus),
-         MilkContainingStatus = as.factor(MilkContainingStatus)) %>%
+         MilkContainingStatus = as.factor(MilkContainingStatus),
+         diabetes = as.factor(diabetes),
+         hyperten = as.factor(hyperten)) %>%
   mutate(Sex = plyr::revalue(Sex, c("1" = "Male","2" = "Female")),
          Education = case_when(Education == "1" ~ "Less Than High School",
                                Education == "2" ~ "High School",
@@ -86,149 +88,163 @@ summary(data)
 
 #AGE
 cat("Quantiles for AGE, TOTAL: ", quantile(data$Age_num, na.rm = TRUE), "\n")
-cat("Quantiles for AGE, PAD =1: ", quantile(data$Age_num[data$PAD == "1"], na.rm = TRUE), "\n")
-cat("Quantiles for AGE, PAD =0: ", quantile(data$Age_num[data$PAD == "0"], na.rm = TRUE), "\n")
+cat("Quantiles for AGE, mortstat =1: ", quantile(data$Age_num[data$mortstat == "1"], na.rm = TRUE), "\n")
+cat("Quantiles for AGE, mortstat =0: ", quantile(data$Age_num[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #PovertyIncome
 cat("Quantiles for PovertyIncome, TOTAL: ", quantile(data$PovertyIncome, na.rm = TRUE), "\n")
-cat("Quantiles for PovertyIncome, PAD =1: ", quantile(data$PovertyIncome[data$PAD == "1"], na.rm = TRUE), "\n")
-cat("Quantiles for PovertyIncome, PAD =0: ", quantile(data$PovertyIncome[data$PAD == "0"], na.rm = TRUE), "\n")
+cat("Quantiles for PovertyIncome, mortstat =1: ", quantile(data$PovertyIncome[data$mortstat == "1"], na.rm = TRUE), "\n")
+cat("Quantiles for PovertyIncome, mortstat =0: ", quantile(data$PovertyIncome[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #Left ankle-brachial pressure index
-#cat("Quantiles for Left ankle-brachial pressure index, PAD =1: ", quantile(data$LEXLABPI[data$PAD == "1"], na.rm = TRUE), "\n")
-#cat("Quantiles for Left ankle-brachial pressure index, PAD =0: ", quantile(data$LEXLABPI[data$PAD == "0"], na.rm = TRUE), "\n")
+#cat("Quantiles for Left ankle-brachial pressure index, mortstat =1: ", quantile(data$LEXLABPI[data$mortstat == "1"], na.rm = TRUE), "\n")
+#cat("Quantiles for Left ankle-brachial pressure index, mortstat =0: ", quantile(data$LEXLABPI[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #Right ankle-brachial pressure index
-#cat("Quantiles for Right ankle-brachial pressure index, PAD =1: ", quantile(data$LEXRABPI[data$PAD == "1"], na.rm = TRUE), "\n")
-#cat("Quantiles for Right ankle-brachial pressure index, PAD =0: ", quantile(data$LEXRABPI[data$PAD == "0"], na.rm = TRUE), "\n")
+#cat("Quantiles for Right ankle-brachial pressure index, mortstat =1: ", quantile(data$LEXRABPI[data$mortstat == "1"], na.rm = TRUE), "\n")
+#cat("Quantiles for Right ankle-brachial pressure index, mortstat =0: ", quantile(data$LEXRABPI[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #Total Coffee Intake
-cat("Quantiles for Total Coffee Intake, PAD =1: ", quantile(data$TotalCoffeeIntake[data$PAD == "1"], na.rm = TRUE), "\n")
-cat("Quantiles for Total Coffee Intake, PAD =0: ", quantile(data$TotalCoffeeIntake[data$PAD == "0"], na.rm = TRUE), "\n")
+cat("Quantiles for Total Coffee Intake, mortstat =1: ", quantile(data$TotalCoffeeIntake[data$mortstat == "1"], na.rm = TRUE), "\n")
+cat("Quantiles for Total Coffee Intake, mortstat =0: ", quantile(data$TotalCoffeeIntake[data$mortstat == "0"], na.rm = TRUE), "\n")
 
+#Permth_int
+cat("Quantiles for permth_int, mortstat =1: ", quantile(data$permth_int[data$mortstat == "1"], na.rm = TRUE), "\n")
+cat("Quantiles for permth_int, mortstat =0: ", quantile(data$permth_int[data$mortstat == "0"], na.rm = TRUE), "\n")
+
+#Permth_exm
+cat("Quantiles for permth_ext, mortstat =1: ", quantile(data$permth_ext[data$mortstat == "1"], na.rm = TRUE), "\n")
+cat("Quantiles for permth_ext, mortstat =0: ", quantile(data$permth_ext[data$mortstat == "0"], na.rm = TRUE), "\n")
 ################# Mann-Whitney U test
-# assumptions: 
+
 
 #AGE
-mwu_result <- wilcox.test(data$Age_num ~ data$PAD)
+mwu_result <- wilcox.test(data$Age_num ~ data$mortstat)
 print(mwu_result)
 #PovertyIncome
-mwu_result <- wilcox.test(data$PovertyIncome ~ data$PAD)
+mwu_result <- wilcox.test(data$PovertyIncome ~ data$mortstat)
 print(mwu_result)
 #Left ankle-brachial pressure index
-#mwu_result <- wilcox.test(data$LEXLABPI ~ data$PAD)
+#mwu_result <- wilcox.test(data$LEXLABPI ~ data$mortstat)
 #print(mwu_result)
 #Right ankle-brachial pressure index
-#mwu_result <- wilcox.test(data$LEXRABPI ~ data$PAD)
+#mwu_result <- wilcox.test(data$LEXRABPI ~ data$mortstat)
 #print(mwu_result)
 #Total Coffee Intake
-mwu_result <- wilcox.test(data$TotalCoffeeIntake ~ data$PAD)
+mwu_result <- wilcox.test(data$TotalCoffeeIntake ~ data$mortstat)
+print(mwu_result)
+#Permth_int
+mwu_result <- wilcox.test(data$permth_int ~ data$mortstat)
+print(mwu_result)
+#Permth_exm
+mwu_result <- wilcox.test(data$permth_exm ~ data$mortstat)
 print(mwu_result)
 
 
 #####################-------------------CATEGORICALS:
 # pivot tables for catagoricals:
 
-#PAD - only 10% of the patients have the disease
+#mortstat - only 10% of the patients have the disease
 df_pivot <- data %>% 
   summarise(n = n(),
-            PAD_yes = sum(PAD=="1"),
-            PAD_no = sum(PAD=="0"),
-            PAD_yes_percent = sum(PAD=="1")/n,
-            PAD_no_percent = (sum(PAD=="0"))/n
+            mortstat_yes = sum(mortstat=="1"),
+            mortstat_no = sum(mortstat=="0"),
+            mortstat_yes_percent = sum(mortstat=="1")/n,
+            mortstat_no_percent = (sum(mortstat=="0"))/n
   )
 df_pivot
 
-#AGE - the distribution of AGE groups for people having PAD = 0, or PAD = 1
+#AGE - the distribution of AGE groups for people having mortstat = 0, or mortstat = 1
 #NAN's excluded
 pivot_counts <- data[complete.cases(data$Age_fct), ] %>%
-  group_by(PAD,Age_fct) %>%
+  group_by(mortstat,Age_fct) %>%
   summarise(count = n()) %>%
   ungroup()
 pivot_counts 
 
 pivot_totals <- data[complete.cases(data$Age_fct), ]%>%
-  group_by(PAD) %>%
+  group_by(mortstat) %>%
   summarise(total_count = n())
 pivot_totals
 
-df_with_totals <- left_join(pivot_counts, pivot_totals, by = "PAD")%>%
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   mutate(percentage = count / total_count * 100)%>%
-  pivot_wider(names_from = PAD, values_from = percentage)
+  pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
 
-#SEX - the distribution of SEXes for people having PAD = 0, or PAD = 1
+#SEX - the distribution of SEXes for people having mortstat = 0, or mortstat = 1
 #NAN's excluded
 pivot_counts <- data[complete.cases(data$Sex), ] %>%
-  group_by(PAD,Sex) %>%
+  group_by(mortstat,Sex) %>%
   summarise(count = n()) %>%
   ungroup()
 pivot_counts 
 
 pivot_totals <- data[complete.cases(data$Sex), ] %>%
-  group_by(PAD) %>%
+  group_by(mortstat) %>%
   summarise(total_count = n())
 pivot_totals
 
-df_with_totals <- left_join(pivot_counts, pivot_totals, by = "PAD")%>%
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   mutate(percentage = count / total_count * 100)%>%
-  pivot_wider(names_from = PAD, values_from = percentage)
+  pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
 
-#RACE - the distribution of races for people having PAD = 0, or PAD = 1
+#RACE - the distribution of races for people having mortstat = 0, or mortstat = 1
 #NAN's excluded
 pivot_counts <- data[complete.cases(data$Race), ] %>%
-  group_by(PAD,Race) %>%
+  group_by(mortstat,Race) %>%
   summarise(count = n()) %>%
   ungroup()
 pivot_counts 
 
 pivot_totals <- data[complete.cases(data$Race), ]%>%
-  group_by(PAD) %>%
+  group_by(mortstat) %>%
   summarise(total_count = n())
 pivot_totals
 
-df_with_totals <- left_join(pivot_counts, pivot_totals, by = "PAD")%>%
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   mutate(percentage = count / total_count * 100)%>%
-  pivot_wider(names_from = PAD, values_from = percentage)
+  pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
 
 
-#MaritalStatus - the distribution of MaritalStatus groups for people having PAD = 0, or PAD = 1
+#MaritalStatus - the distribution of MaritalStatus groups for people having mortstat = 0, or mortstat = 1
 #NAN's excluded
 pivot_counts <- data[complete.cases(data$MaritalStatus), ] %>%
-  group_by(PAD,MaritalStatus) %>%
+  group_by(mortstat,MaritalStatus) %>%
   summarise(count = n()) %>%
   ungroup()
 pivot_counts 
 
 pivot_totals <- data[complete.cases(data$MaritalStatus), ]%>%
-  group_by(PAD) %>%
+  group_by(mortstat) %>%
   summarise(total_count = n())
 pivot_totals
 
-df_with_totals <- left_join(pivot_counts, pivot_totals, by = "PAD")%>%
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   mutate(percentage = count / total_count * 100)%>%
-  pivot_wider(names_from = PAD, values_from = percentage)
+  pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
 
-#Education - the distribution of Education groups for people having PAD = 0, or PAD = 1
+#Education - the distribution of Education groups for people having mortstat = 0, or mortstat = 1
 #NAN's excluded
 pivot_counts <- data[complete.cases(data$Education), ] %>%
-  group_by(PAD,Education) %>%
+  group_by(mortstat,Education) %>%
   summarise(count = n()) %>%
   ungroup()
 pivot_counts 
 
 pivot_totals <- data[complete.cases(data$Education), ]%>%
-  group_by(PAD) %>%
+  group_by(mortstat) %>%
   summarise(total_count = n())
 pivot_totals
 
-df_with_totals <- left_join(pivot_counts, pivot_totals, by = "PAD")%>%
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   mutate(percentage = count / total_count * 100)%>%
-  pivot_wider(names_from = PAD, values_from = percentage)
+  pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
+
 
 #### CHI-SQUARED test for categoricals
 #Null hypotesis: 
@@ -244,18 +260,22 @@ df_with_totals
 
 #NOTE: missing values are automatically excluded
 #Age
-chisq.test(table(data$Age_fct,data$PAD))
+chisq.test(table(data$Age_fct,data$mortstat))
 #SEX
-chisq.test(table(data$Sex,data$PAD)) #there is an association!!!
+chisq.test(table(data$Sex,data$mortstat)) #there is an association!!!
 #Race
-chisq.test(table(data$Race,data$PAD))
+chisq.test(table(data$Race,data$mortstat))
 #Marital Status
-chisq.test(table(data$MaritalStatus,data$PAD))
+chisq.test(table(data$MaritalStatus,data$mortstat))$expected
+fisher.test(table(data$Education,data$mortstat))
 
 #Education
-      #PROBLEM: the expected frequency for incomplete group with PAD = 1 is lower that 5
-chisq.test(table(data$Education,data$PAD))$expected
+      #PROBLEM: the expected frequency for incomplete group with mortstat = 1 is lower that 5
+chisq.test(table(data$Education,data$mortstat))$expected
       #SOLUTION: therefore we should use the Fisher’s exact test
-fisher.test(table(data$Education,data$PAD))
+fisher.test(table(data$Education,data$mortstat))
+
+#Coffee
+chisq.test(table(data$Coffee,data$mortstat))
 
 
