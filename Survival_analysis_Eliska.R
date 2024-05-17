@@ -78,7 +78,10 @@ data <- data%>%
          Race = as.factor(Race),
          Age_fct = case_when(Age_num < 65 ~ "Age < 65 years",
                              Age_num >= 65 ~ "Age >= 65 years"),
-         Age_fct = as.factor(Age_fct)) 
+         Age_fct = as.factor(Age_fct),
+         CaffeinatedStatus = case_when(CaffeinatedStatus == "0" ~ "Without Caffeine",
+                                       CaffeinatedStatus == "1" ~ "With Caffeine",
+                                       CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee")) 
 
 summary(data)
 
@@ -96,14 +99,15 @@ data %>%
               show.legend=T) +
   scale_colour_gradient(low = "hotpink", high = "#56B1F7") +
   stat_summary(fun=mean, geom="point", shape=4, size=4,color = "blue") 
+#ANOVA
 data %>% anova_test(permth_int ~ Coffee)
 
 
 data %>%
   ggplot(aes(x=CaffeinatedStatus, y=permth_int)) + 
   geom_boxplot(size = 0.6, notch = F) + 
-  xlab("Caffein status") +
-  ylab("Survival time") +
+  xlab("Caffeinated status") +
+  ylab("Survival time (months)") +
   theme_bw() +  
   geom_jitter(aes(CaffeinatedStatus,permth_int),#adding dottes
               position=position_jitter(width=0.3,height=0),
@@ -112,6 +116,7 @@ data %>%
               show.legend=T) +
   scale_colour_gradient(low = "hotpink", high = "#56B1F7") +
   stat_summary(fun=mean, geom="point", shape=4, size=4,color = "blue") 
+#ANOVA
 data %>% anova_test(permth_int ~ CaffeinatedStatus)
 anova_result <- aov(permth_int ~ CaffeinatedStatus, data = data)
 summary(anova_result)
@@ -189,17 +194,17 @@ lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col 
 #View(data[selected_points,])
 
 #----comparing nested models:
-anova(model2,model3,test = "LRT")
+#anova(model2,model3,test = "LRT")
 AIC(model2,model3)
 BIC(model2,model3)
-#the higher the better
+#the higher the concordance the better
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
 
-#----comparing non-nested models:
+#anova(model3,model4,test = "LRT")
 AIC(model3,model4)
 BIC(model3,model4)
-#the higher the better
+#the higher the concordance the better
 summary(model3)$concordance[1]
 summary(model4)$concordance[1] 
 
@@ -210,7 +215,7 @@ summary(model4)$concordance[1]
 ##-------------------------------- Cox's PH regression model
 #Cox is good only for the HR (not for predictions!!!)
 
-model1 <- coxph(Surv(permth_int, mortstat) ~ TotalCoffeeIntake+Coffee, data = data) 
+model1 <- coxph(Surv(permth_int, mortstat) ~ TotalCoffeeIntake, data = data) 
 summary(model1)
 
 model2 <- coxph(Surv(permth_int, mortstat) ~ TotalCoffeeIntake +Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
