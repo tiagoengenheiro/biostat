@@ -82,8 +82,13 @@ data <- data%>%
          Age_fct = as.factor(Age_fct),
          CaffeinatedStatus = case_when(CaffeinatedStatus == "0" ~ "Without Caffeine",
                                        CaffeinatedStatus == "1" ~ "With Caffeine",
-                                       CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee")) 
-
+                                       CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee"),
+         Disease = case_when(diabetes == "0" & hyperten == "0" ~ "0",
+                             mortstat == "0" ~ "alive",
+                             diabetes == "1" & hyperten == "0" ~ "1",
+                             diabetes == "0" & hyperten == "1" ~ "1",
+                             diabetes == "1" & hyperten == "1" ~ "2"),
+         Disease = as.factor(Disease)) 
 summary(data)
 
 #----------------- Filtering for missing values
@@ -172,8 +177,10 @@ print(paste("AUC:", model_1_3auc))
 # Hosmer_lemeshow
 hoslem.test(data$mortstat, fitted(model_1_3))
 # Residuals
-residuals <- residuals(model_1_3, type = "deviance")
-plot(residuals)
+residuals <- rstandard(model_1_3, type = "deviance")
+plot(fitted(model_1_3),residuals,xlab = "fitted values",ylab = "Residuals")
+#termplot(model_1_3,partial.resid = TRUE,las=1)
+
 #--------------------------
 ##----------------------------------
 #AIC: 348.68

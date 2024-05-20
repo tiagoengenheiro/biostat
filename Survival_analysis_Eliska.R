@@ -81,7 +81,13 @@ data <- data%>%
          Age_fct = as.factor(Age_fct),
          CaffeinatedStatus = case_when(CaffeinatedStatus == "0" ~ "Without Caffeine",
                                        CaffeinatedStatus == "1" ~ "With Caffeine",
-                                       CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee")) 
+                                       CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee"),
+         Disease = case_when(diabetes == "0" & hyperten == "0" ~ "0",
+                             mortstat == "0" ~ "alive",
+                             diabetes == "1" & hyperten == "0" ~ "1",
+                             diabetes == "0" & hyperten == "1" ~ "1",
+                             diabetes == "1" & hyperten == "1" ~ "2"),
+         Disease = as.factor(Disease)) 
 
 summary(data)
 
@@ -150,9 +156,11 @@ summary(model2)
 model3 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
 
-model4 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
-summary(model4)
+#model4 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
+#summary(model4)
 
+#model4 <- coxph(Surv(permth_int, mortstat) ~ CoffeeDisease, data = data)
+#summary(model4)
 
 #-------ASSUMPTIONS
 #Test the Proportional Hazards Assumption of a Cox Regression
@@ -161,7 +169,7 @@ summary(model4)
 cox.zph(model1) 
 cox.zph(model2) 
 cox.zph(model3) 
-cox.zph(model4)
+#cox.zph(model4)
 
 #checking the linearity 
 plot(predict(model2), residuals(model2,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
@@ -174,24 +182,16 @@ lines(smooth.spline(predict(model2), residuals(model2,type = "martingale")),col 
 #print(selected_points)
 #View(data[selected_points,])
 
-plot(predict(model3), residuals(model3,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
+plot(predict(model3), residuals(model3,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
 abline(h=0)
 lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col = "red")
-# Use identify to interactively select points
-selected_points <- identify(predict(model3), residuals(model3,type = "martingale"), labels = seq_along(predict(model3)))
-# Print the indices of the selected points
-print(selected_points)
-View(data[selected_points,])
 
-
-plot(predict(model4), residuals(model4,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
-abline(h=0)
-lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col = "red")
 # Use identify to interactively select points
-#selected_points <- identify(predict(model4), residuals(model4,type = "martingale"), labels = seq_along(predict(model4)))
+#selected_points <- identify(predict(model3), residuals(model3,type = "martingale"), labels = seq_along(predict(model3)))
 # Print the indices of the selected points
 #print(selected_points)
 #View(data[selected_points,])
+
 
 #----comparing nested models:
 #anova(model2,model3,test = "LRT")
@@ -201,12 +201,6 @@ BIC(model2,model3)
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
 
-#anova(model3,model4,test = "LRT")
-AIC(model3,model4)
-BIC(model3,model4)
-#the higher the concordance the better
-summary(model3)$concordance[1]
-summary(model4)$concordance[1] 
 
 
 #-------COFFEE INTAKE
@@ -224,8 +218,8 @@ summary(model2)
 model3 <- coxph(Surv(permth_int, mortstat) ~ TotalCoffeeIntake+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
 
-model4 <- coxph(Surv(permth_int, mortstat) ~ TotalCoffeeIntake+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
-summary(model4)
+#model4 <- coxph(Surv(permth_int, mortstat) ~ TotalCoffeeIntake+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
+#summary(model4)
 
 
 
@@ -256,36 +250,47 @@ summary(model2)
 model3 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
 
-model4 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
-summary(model4)
+#model4 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
+#summary(model4)
+
+#-------ASSUMPTIONS
+#Test the Proportional Hazards Assumption of a Cox Regression
+#H0... HR are proportional
+#Ha... HR are not
+cox.zph(model1) 
+cox.zph(model2) 
+cox.zph(model3) 
+#cox.zph(model4)
+
+#checking the linearity 
+plot(predict(model2), residuals(model2,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
+abline(h=0)
+lines(smooth.spline(predict(model2), residuals(model2,type = "martingale")),col = "red")
+
+# Use identify to interactively select points
+#selected_points <- identify(predict(model2), residuals(model2,type = "martingale"), labels = seq_along(predict(model2)))
+# Print the indices of the selected points
+#print(selected_points)
+#View(data[selected_points,])
+
+plot(predict(model3), residuals(model3,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
+abline(h=0)
+#lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col = "red")
+# Use identify to interactively select points
+#selected_points <- identify(predict(model3), residuals(model3,type = "martingale"), labels = seq_along(predict(model3)))
+# Print the indices of the selected points
+#print(selected_points)
+#View(data[selected_points,])
 
 
 
+#----comparing nested models:
+#anova(model2,model3,test = "LRT")
+AIC(model2,model3)
+BIC(model2,model3)
+#the higher the concordance the better
+summary(model2)$concordance[1]
+summary(model3)$concordance[1]
 
 
-##FUTURE WORK-------------------------------- SURVIVAL REGRESSION (PARAMETRIC MODELS)
-
-# Fit different survival models
-exp_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "exponential")
-summary(exp_model)
-weibull_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "weibull")
-summary(weibull_model)
-lognormal_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "lognormal")
-summary(lognormal_model)
-loglogistic_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "loglogistic")
-summary(loglogistic_model)
-gauss_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "gaussian")
-summary(gauss_model)
-loggauss_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "loggaussian")
-summary(loggauss_model)
-rayleigh_model <- survreg(Surv(permth_int, mortstat) ~ Sex+Race+PovertyIncome+Age_fct+Coffee, data = data, dist = "rayleigh")
-summary(rayleigh_model)
-# Compare models using AIC
-AIC(exp_model)
-AIC(weibull_model)
-AIC(lognormal_model)
-AIC(loglogistic_model)
-AIC(gauss_model)
-AIC(loggauss_model)
-AIC(rayleigh_model)
 
