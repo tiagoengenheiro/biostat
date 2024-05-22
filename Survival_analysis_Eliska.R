@@ -82,6 +82,7 @@ data <- data%>%
          CaffeinatedStatus = case_when(CaffeinatedStatus == "0" ~ "Without Caffeine",
                                        CaffeinatedStatus == "1" ~ "With Caffeine",
                                        CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee"),
+         CaffeinatedStatus = as.factor(CaffeinatedStatus),
          Disease = case_when(diabetes == "0" & hyperten == "0" ~ "0",
                              mortstat == "0" ~ "alive",
                              diabetes == "1" & hyperten == "0" ~ "1",
@@ -136,7 +137,8 @@ print(tukey_result)
 # Fit survival data using the Kaplan-Meier method
 model0 <- survfit(Surv(time = permth_int, event = mortstat) ~ Coffee, data = data, type = "kaplan-meier")
 
-ggsurvplot(model0, data = data, pval = TRUE, conf.int=TRUE,xlim = c(0,250), surv.median.line = "hv")
+ggsurvplot(model0, data = data, pval = FALSE, conf.int=TRUE,xlim = c(0,250), surv.median.line = "hv",
+           legend.labs = c("Did consume coffee", "Did not consume coffee"))
 
 #testing if the two survival functions are significantly different: LOG-RANK TEST
   #H0: survival in the two groups is the same
@@ -155,6 +157,7 @@ summary(model2)
 
 model3 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
+
 
 #model4 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
 #summary(model4)
@@ -195,8 +198,12 @@ lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col 
 
 #----comparing nested models:
 #anova(model2,model3,test = "LRT")
-AIC(model2,model3)
-BIC(model2,model3)
+AIC(model1)
+AIC(model2)
+AIC(model3)
+BIC(model1)
+BIC(model2)
+BIC(model3)
 #the higher the concordance the better
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
@@ -230,7 +237,9 @@ summary(model3)
 # Fit survival data using the Kaplan-Meier method
 model0 <- survfit(Surv(time = permth_int, event = mortstat) ~ CaffeinatedStatus, data = data, type = "kaplan-meier")
 
-ggsurvplot(model0, data = data, pval = TRUE, conf.int=TRUE,xlim = c(0,250), surv.median.line = "hv")
+ggsurvplot(model0, data = data, pval = FALSE, conf.int=TRUE,xlim = c(0,250), surv.median.line = "hv",
+           legend.labs = c("Did not consume coffee", "With caffeine", "Without caffeine")) 
+
 
 #testing if the two survival functions are significantly different: LOG-RANK TEST
 #H0: survival in the two groups is the same
@@ -248,6 +257,17 @@ model2 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct,
 summary(model2)
 
 model3 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome, data = data)
+summary(model3)
+
+
+
+model1 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "With Caffeine"), data = data) #the same as model0, but extracting the HR
+summary(model1)
+
+model2 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "With Caffeine"),+Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
+summary(model2)
+
+model3 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "With Caffeine"),+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
 
 #model4 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
@@ -286,8 +306,12 @@ abline(h=0)
 
 #----comparing nested models:
 #anova(model2,model3,test = "LRT")
-AIC(model2,model3)
-BIC(model2,model3)
+AIC(model1)
+AIC(model2)
+AIC(model3)
+BIC(model1)
+BIC(model2)
+BIC(model3)
 #the higher the concordance the better
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
