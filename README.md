@@ -80,4 +80,4 @@ We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/
 ### Dataset
 
 #### Variables
-The final Dataset [data/df_final_mortality.csv](data/df_final_mortality.csv) contains these variables and some more, you can find all variables and corresponding descriptions in [data/df_final_mortality_variables.md](data/df_final_variables.md)
+The final Dataset [data/df_final_mortality.csv](data/df_final_mortality.csv) contains these variables and some more, you can find all variables and corresponding descriptions in [data/df_final_mortality_variables.md](data/df_final_mortality_variables.md)
