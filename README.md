@@ -57,6 +57,7 @@ From the Examination Data we retrieved the following Data File:
     From these variables we created a variable for our disease (PAD):
     - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the 2011 paper)
 
+
 ### Coffee Types Data 
 **Source**: This data was extracted from the 2023 paper (Table S1) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee.
 
@@ -71,7 +72,12 @@ We arrived at the following variables:
 - **FattyStatus**: (Binary)
 - **MilkContainingStatus**: (Binary)
 
+### Mortality Data
+We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/data-linkage/mortality-public.htm).
+- We speficially retrieved mortality data for the considered years (**1999-2004**)
+- More information about this data in [mortality_info folder](mortality_info/)
+
 ### Dataset
 
 #### Variables
-The final Dataset (data/**df_final_mortality.csv**) contains these variables and some more, you can find all variables and corresponding descriptions in [data/df_final_variables.md](data/df_final_variables.md)
+The final Dataset [data/df_final_mortality.csv](data/df_final_mortality.csv) contains these variables and some more, you can find all variables and corresponding descriptions in [data/df_final_mortality_variables.md](data/df_final_variables.md)
