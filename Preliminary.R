@@ -33,8 +33,8 @@ summary(data)
 colSums(is.na(data))
 
 # Replace NANs in types of coffee with zeros, if the person didn't drink any coffee at all
-data$TotalCoffeeIntake <- ifelse(is.na(data$TotalCoffeeIntake) & data$Coffee == 0, 0, data$TotalCoffeeIntake)
-#data$CaffeinatedStatus <- ifelse(is.na(data$CaffeinatedStatus) & data$Coffee == 0, 0, data$CaffeinatedStatus)
+#data$TotalCoffeeIntake <- ifelse(is.na(data$TotalCoffeeIntake) & data$Coffee == 0, 0, data$TotalCoffeeIntake)
+data$CaffeinatedStatus <- ifelse(is.na(data$CaffeinatedStatus) & data$Coffee == 0, "did not drink any", data$CaffeinatedStatus)
 #data$SugaryStatus <- ifelse(is.na(data$SugaryStatus) & data$Coffee == 0, 0, data$SugaryStatus)
 #data$FattyStatus <- ifelse(is.na(data$FattyStatus) & data$Coffee == 0, 0, data$FattyStatus)
 #data$MilkContainingStatus <- ifelse(is.na(data$MilkContainingStatus) & data$Coffee == 0, 0, data$MilkContainingStatus)
@@ -105,16 +105,19 @@ cat("Quantiles for PovertyIncome, mortstat =0: ", quantile(data$PovertyIncome[da
 #cat("Quantiles for Right ankle-brachial pressure index, mortstat =0: ", quantile(data$LEXRABPI[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #Total Coffee Intake
+cat("Quantiles for Total Coffee Intake, TOTAL: ", quantile(data$TotalCoffeeIntake, na.rm = TRUE), "\n")
 cat("Quantiles for Total Coffee Intake, mortstat =1: ", quantile(data$TotalCoffeeIntake[data$mortstat == "1"], na.rm = TRUE), "\n")
 cat("Quantiles for Total Coffee Intake, mortstat =0: ", quantile(data$TotalCoffeeIntake[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #Permth_int
+cat("Quantiles for permth_int, TOTAL: ", quantile(data$permth_int, na.rm = TRUE), "\n")
 cat("Quantiles for permth_int, mortstat =1: ", quantile(data$permth_int[data$mortstat == "1"], na.rm = TRUE), "\n")
 cat("Quantiles for permth_int, mortstat =0: ", quantile(data$permth_int[data$mortstat == "0"], na.rm = TRUE), "\n")
 
 #Permth_exm
-cat("Quantiles for permth_ext, mortstat =1: ", quantile(data$permth_ext[data$mortstat == "1"], na.rm = TRUE), "\n")
-cat("Quantiles for permth_ext, mortstat =0: ", quantile(data$permth_ext[data$mortstat == "0"], na.rm = TRUE), "\n")
+cat("Quantiles for permth_exm, TOTAL: ", quantile(data$permth_exm, na.rm = TRUE), "\n")
+cat("Quantiles for permth_exm, mortstat =1: ", quantile(data$permth_exm[data$mortstat == "1"], na.rm = TRUE), "\n")
+cat("Quantiles for permth_exm, mortstat =0: ", quantile(data$permth_exm[data$mortstat == "0"], na.rm = TRUE), "\n")
 ################# Mann-Whitney U test
 
 
@@ -166,6 +169,7 @@ pivot_totals <- data[complete.cases(data$Age_fct), ]%>%
   group_by(mortstat) %>%
   summarise(total_count = n())
 pivot_totals
+
 
 df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   mutate(percentage = count / total_count * 100)%>%
@@ -245,6 +249,42 @@ df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
 
+#Coffee - the distribution of Coffee groups for people having mortstat = 0, or mortstat = 1
+#NAN's excluded
+pivot_counts <- data[complete.cases(data$Coffee), ] %>%
+  group_by(mortstat,Coffee) %>%
+  summarise(count = n()) %>%
+  ungroup()
+pivot_counts 
+
+pivot_totals <- data[complete.cases(data$Coffee), ]%>%
+  group_by(mortstat) %>%
+  summarise(total_count = n())
+pivot_totals
+
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
+  mutate(percentage = count / total_count * 100)%>%
+  pivot_wider(names_from = mortstat, values_from = percentage)
+df_with_totals
+
+#CaffeinatedStatus - the distribution of CaffeinatedStatus groups for people having mortstat = 0, or mortstat = 1
+#NAN's excluded
+pivot_counts <- data[complete.cases(data$CaffeinatedStatus), ] %>%
+  group_by(mortstat,CaffeinatedStatus) %>%
+  summarise(count = n()) %>%
+  ungroup()
+pivot_counts 
+
+pivot_totals <- data[complete.cases(data$CaffeinatedStatus), ]%>%
+  group_by(mortstat) %>%
+  summarise(total_count = n())
+pivot_totals
+
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
+  mutate(percentage = count / total_count * 100)%>%
+  pivot_wider(names_from = mortstat, values_from = percentage)
+df_with_totals
+
 
 #### CHI-SQUARED test for categoricals
 #Null hypotesis: 
@@ -278,4 +318,14 @@ fisher.test(table(data$Education,data$mortstat))
 #Coffee
 chisq.test(table(data$Coffee,data$mortstat))
 
+#Caffeinated Status
+chisq.test(table(data$CaffeinatedStatus,data$mortstat))
 
+#-----------------multiple cause of death
+
+data_both <- data%>%filter(diabetes == "1" & hyperten == "1" ) 
+data_hyp <- data%>%filter(diabetes == "0" & hyperten == "1" ) 
+data_diab <- data%>%filter(diabetes == "1" & hyperten == "0" ) 
+data_PAD <- data%>%filter(diabetes == "0" & hyperten == "0" )
+
+summary(data)
