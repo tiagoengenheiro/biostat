@@ -17,7 +17,7 @@ df_lexab_03_04=read_xpt("data/2003-04/Examination/LEXAB_C.XPT")
 #Bind Examination data (bind_rows merges all rows and keeps the union of the columns - https://www.statology.org/dplyr-bind_rows-bind_cols/)
 df_lexab <- bind_rows(df_lexab_99_00, df_lexab_01_02,df_lexab_03_04)
 
-#Remove rows with missing values on LEXLABPI or on LEXRABPI -> 7571
+#Remove rows with missing values on noth LEXLABPI and  LEXRABPI -> 7571
 df_lexab <- df_lexab %>% filter(!is.na(LEXLABPI) | !is.na(LEXRABPI))
 dim(df_lexab)[1]==7571
 #Exclude the ones with LEXLABPI or LEXRABPI > 1.40
@@ -25,7 +25,9 @@ df_lexab <- df_lexab %>% filter(LEXLABPI<1.40 & LEXRABPI<1.40)
 
 dim(df_lexab)[1]==6716
 #Create PAD variable
-df_lexab$PAD <- ifelse(df_lexab$LEXLABPI<=0.9 | df_lexab$LEXRABPI<=0.9,1,0)
+df_lexab$PAD <- ifelse(
+    !is.na(df_lexab$LEXLABPI) & df_lexab$LEXLABPI<=0.9 | 
+    !is.na(df_lexab$LEXRABPI) & df_lexab$LEXRABPI<=0.9,1,0)
 #Count how many rows with PAD=1
 table(df_lexab$PAD)
 
@@ -189,8 +191,134 @@ write.csv(dsn, "data/dsn.csv", row.names = FALSE)
 table(dsn$hyperten)
 #Inner join with df_final
 df_final_mortality <- inner_join(df_final, dsn, by = c("SEQN"="seqn"))
+table(df_final_mortality$mortstat)
 
 #Save the dataset
 write.csv(df_final_mortality, "data/df_final_mortality.csv", row.names = FALSE)
 
 #Do a function of fibonacci for the first 10 numbe
+
+rm(list = ls())
+#Load df_final mortality
+df <- read.csv("data/df_final_mortality.csv")
+
+#Delete diabetes and hypertension columns
+#df <- df %>% select(-diabetes, -hyperten)
+dim(df)[1]==512
+
+## ADDITIONAL COVARIATES
+# - Smoking status
+# - Hypertension
+# - Diabetes
+# - Hyperlipdmia
+# - BMI ?
+
+#Load Questionnaire Data (1999-2004)
+df_questionnaire_99_00=read_xpt("data/1999-00/Questionnaire/SMQ.XPT")
+df_questionnaire_01_02=read_xpt("data/2001-02/Questionnaire/SMQ_B.XPT")
+df_questionnaire_03_04=read_xpt("data/2003-04/Questionnaire/SMQ_C.XPT")
+
+#Bind Questionnaire data
+df_questionnaire <- bind_rows(df_questionnaire_99_00, df_questionnaire_01_02,df_questionnaire_03_04)
+
+#Select only the SEQN that are present in the df
+
+#Smoking status
+df_smoking <- df_questionnaire %>% select(SEQN,SMQ020,SMQ040,SMD070,SMQ050Q)
+## Smoking status variable
+#SMQ020: Smoked at least 100 cigarettes in life
+#SMQ040: Do u now smoke cigarettes
+#SMQ050Q - How long since quit smoking cigarettes
+#SMD070 - # cigarettes smoked per day now
+
+df_with_smoking <- inner_join(df, df_smoking, by = "SEQN")
+dim(df_with_smoking)
+table(df_with_smoking$SMQ020)
+table(df_with_smoking$SMQ040)
+
+
+df_with_smoking[df_with_smoking$SMQ020==2,]$SMQ040
+#If didn't smoke at least 100 ciggarestes -> never smoked (0)
+#If smoked at least 100 cigarettes and now doesn't smoke -> former smoker (1)
+#If smoked at least 100 cigarettes and now smokes -> current smoker (2)
+sum(is.na(df_with_smoking$SMQ020))
+df_with_smoking[is.na(df_with_smoking$SMQ020),]
+df_with_smoking$SmokingStatus <- ifelse(df_with_smoking$SMQ020==2,0,ifelse(df_with_smoking$SMQ040!=3,1,2))
+table(df_with_smoking$SmokingStatus)
+sum(is.na(df_with_smoking$SmokingStatus))
+
+df <- df_with_smoking %>% select(-SMQ020, -SMQ040, -SMQ050Q, -SMD070)
+dim(df)
+colnames(df)
+
+
+
+# Hypertension
+
+#Load Examination Data (1999-2004)  for Blood Pressure
+df_blood_pressure_99_00=read_xpt("data/1999-00/Examination/BPX.XPT")
+df_blood_pressure_01_02=read_xpt("data/2001-02/Examination/BPX_B.XPT")
+df_blood_pressure_03_04=read_xpt("data/2003-04/Examination/BPX_C.XPT")
+
+#Bind Examination data
+df_blood_pressure <- bind_rows(df_blood_pressure_99_00, df_blood_pressure_01_02,df_blood_pressure_03_04)
+
+#Select only the SEQN that are present in the df
+df_blood_pressure <- df_blood_pressure %>% select(SEQN,BPXSAR,BPXDAR,BPXSY1,BPXSY2,BPXSY3,BPXSY4,BPXDI1,BPXDI2,BPXDI3,BPXDI4)
+
+#Join with df
+df_with_blood_pressure <- inner_join(df, df_blood_pressure, by = "SEQN")
+#Among the NAs of BPXSAR, check if there is a non na value in BPXSY1-4
+df_with_blood_pressure[is.na(df_with_blood_pressure$BPXSAR),]$BPXSY4
+#there is not
+df_with_blood_pressure$BPS <- df_with_blood_pressure$BPXSAR
+
+df_with_blood_pressure$BPD <- df_with_blood_pressure$BPXDAR
+
+df_with_blood_pressure <- df_with_blood_pressure %>% select(-BPXSAR, -BPXDAR, -BPXSY1, -BPXSY2, -BPXSY3, -BPXSY4, -BPXDI1, -BPXDI2, -BPXDI3, -BPXDI4)
+dim(df_with_blood_pressure)[1]==512
+
+#Load prescription medication data in Questionnaire Data (1999-2004)
+df_prescription_99_00=read_xpt("data/1999-00/Questionnaire/RXQ_RX.XPT")
+df_prescription_01_02=read_xpt("data/2001-02/Questionnaire/RXQ_RX_B.XPT")
+df_prescription_03_04=read_xpt("data/2003-04/Questionnaire/RXQ_RX_C.XPT")
+
+#Bind prescription data
+df_prescription <- bind_rows(df_prescription_99_00, df_prescription_01_02,df_prescription_03_04)
+
+#Select only FDACODE1-6 and SEQN
+df_prescription <- df_prescription %>% select(SEQN,FDACODE1,FDACODE2,FDACODE3,FDACODE4,FDACODE5,FDACODE6)
+
+#For each SEQN check if FDACODE1 to FDACODE6 equals to 0506 (hypertension medication)
+df_prescription$hypertensionmed <- ifelse(
+    !is.na(df_prescription$FDACODE1) & df_prescription$FDACODE1=="0506" | 
+    !is.na(df_prescription$FDACODE2) & df_prescription$FDACODE2=="0506" | 
+    !is.na(df_prescription$FDACODE3) & df_prescription$FDACODE3=="0506" | 
+    !is.na(df_prescription$FDACODE4) & df_prescription$FDACODE4=="0506" | 
+    !is.na(df_prescription$FDACODE5) & df_prescription$FDACODE5=="0506" | 
+    !is.na(df_prescription$FDACODE6) & df_prescription$FDACODE6=="0506",1,0)
+
+#Since each SEQN can have multiple rows, we group by SEQN and check if patient is taking at least one hypertension medication
+df_prescription=df_prescription %>% group_by(SEQN) %>% summarise(hypertensionmed=ifelse(sum(hypertensionmed,na.rm=TRUE)>0,1,0))
+#Create a new df with only SEQN hypertensionmed=1 if 
+dim(df_prescription)
+#Join with df_with_blood_pressure
+df_hypertension<- inner_join(df_with_blood_pressure, df_prescription, by = "SEQN")
+table(df_hypertension$hypertensionmed)
+
+# Hypertension
+df_hypertension$Hypertension <- ifelse( 
+    !is.na(df_hypertension$BPS) & df_hypertension$BPS>=140 | 
+    !is.na(df_hypertension$BPD) & df_hypertension$BPD>=90 | 
+    !is.na(df_hypertension$hypertensionmed) & df_hypertension$hypertensionmed==1 |
+    !is.na(df_hypertension$hyperten) & df_hypertension$hyperten==1 ,1,0)
+table(df_hypertension$Hypertension)
+sum(is.na(df_hypertension$Hypertension))
+colnames(df_hypertension)
+
+df <- df_hypertension %>% select(-BPS, -BPD, -hypertensionmed, -hyperten)
+colnames(df)
+
+#save new df
+write.csv(df, "data/df_final_mortality_covariates.csv", row.names = FALSE)
+
