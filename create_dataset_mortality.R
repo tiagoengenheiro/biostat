@@ -372,3 +372,59 @@ write.csv(df, "data/df_final_mortality_covariates.csv", row.names = FALSE)
 
 ##DIABETES
 
+#Load new df for Diabetes
+rm(list = ls())
+df <- read.csv("data/df_final_mortality_covariates.csv")
+
+#Load Questionnaire Data (1999-2004)
+df_questionnaire_99_00=read_xpt("data/1999-00/Questionnaire/DIQ.XPT")
+df_questionnaire_01_02=read_xpt("data/2001-02/Questionnaire/DIQ_B.XPT")
+df_questionnaire_03_04=read_xpt("data/2003-04/Questionnaire/DIQ_C.XPT")
+
+#Bind Questionnaire data
+df_questionnaire <- bind_rows(df_questionnaire_99_00, df_questionnaire_01_02,df_questionnaire_03_04)
+
+# DIQ010 - Doctor told you have diabetes
+# DIQ050 - Taking insulin now
+# DIQ070 - Take diabetic pills to lower blood sugar
+
+#Select SEQN, DIQ010, DIQ050, DIQ070
+df_questionnaire <- df_questionnaire %>% select(SEQN,DIQ010,DIQ050,DIQ070)
+
+df_diabetes <- inner_join(df, df_questionnaire, by = "SEQN")
+
+#Load Laboratory Data (1999-2004)
+
+df_lab_99_00=read_xpt("data/1999-00/Laboratory/LAB10AM.XPT")
+df_lab_01_02=read_xpt("data/2001-02/Laboratory/L10AM_B.XPT")
+df_lab_03_04=read_xpt("data/2003-04/Laboratory/L10AM_C.XPT")
+
+#Bind Laboratory data
+df_lab <- bind_rows(df_lab_99_00, df_lab_01_02,df_lab_03_04)
+#Select WTSAF2YR, LBXGLU and SEQN
+df_lab <- df_lab %>% select(SEQN,LBXGLU,WTSAF2YR)
+
+#Inner join with df_diabetes
+df_diabetes <- left_join(df_diabetes, df_lab, by = "SEQN")
+dim(df_diabetes) #only 245 out of 512 have glucose fasting data
+
+sum(df_diabetes$WTSAF2YR == 0.0, na.rm = TRUE) #34 are non fasting
+
+
+df_diabetes$Diabetes <- ifelse(
+    !is.na(df_diabetes$DIQ010) & df_diabetes$DIQ010==1|
+    !is.na(df_diabetes$DIQ050) & df_diabetes$DIQ050==1|
+    !is.na(df_diabetes$DIQ070) & df_diabetes$DIQ070==1|
+    !is.na(df_diabetes$WTSAF2YR) & df_diabetes$WTSAF2YR != 0.0  & !is.na(df_diabetes$LBXGLU) & df_diabetes$LBXGLU>=126|
+    !is.na(df_diabetes$WTSAF2YR) & df_diabetes$WTSAF2YR == 0.0  & !is.na(df_diabetes$LBXGLU) & df_diabetes$LBXGLU>=200|
+    !is.na(df_diabetes$diabetes) & df_diabetes$diabetes==1
+    ,1,0)
+
+table(df_diabetes$Diabetes) #142 have diabetes
+sum(is.na(df_diabetes$Diabetes))
+names(df_diabetes)
+df <- df_diabetes %>% select(-DIQ010, -DIQ050, -DIQ070, -LBXGLU, -WTSAF2YR, -diabetes)
+names(df)
+
+#save new df
+write.csv(df, "data/df_final_mortality_covariates.csv", row.names = FALSE)
