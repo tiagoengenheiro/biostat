@@ -18,9 +18,9 @@ If this document is not rendered already and you want to it rendered choose one 
 - **INDFMPIR**: Poverty income ratio (PIR) - a ratio of family income to poverty threshold
     - [See Documentation](https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/DEMO.htm#INDFMPIR)
 - **permth_int**: Number of Person Months of Follow-up from NHANES interview date
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
+    - [See Documentation](/data/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
 - **permth_exam**:Number of Person Months of Follow-up from NHANES Mobile Examination Center (MEC) date
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
+    - [See Documentation](/data/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
     
 ## Categorical Variables
 - **DMDEDUC**: Education Level
@@ -32,9 +32,9 @@ If this document is not rendered already and you want to it rendered choose one 
 - **DMDMARTL**: Marital Status
     - [See Documentation](https://wwwn.cdc.gov/Nchs/Nhanes/1999-2000/DEMO.htm#DMDMARTL)
 - **eligstat** - Eligibility Status
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
+    - [See Documentation](/data/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
 - **ucod_leading** - Underlying Leading Cause of Death
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
+    - [See Documentation](/data/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
 
 ## Binary Variables
 - **PAD**: Disease
@@ -43,10 +43,14 @@ If this document is not rendered already and you want to it rendered choose one 
 - **SugaryStatus**: Sweetened Coffee(1) | Unsweetened Coffee(0)
 - **FattyStatus**: Coffee with Fat(1) | FatFree Coffee(0)
 - **MilkContainingStatus**: Coffee with milk (1) | Coffee without milk(0)
-
 - **mortstat**: Mortality Status 
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
-- **diabetes**: Diabetes 
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
-- **hypertens**: Hypertension
-    - [See Documentation](/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
+    - [See Documentation](/data/mortality_info/public-use-linked-mortality-files-data-dictionary.pdf)
+
+
+## Covariates (New ones)
+- **SmokingStatus**: Never Smoked (0), Former Smoker (1), Current Smoker(2)
+- **Hypertension**: Yes (1) No (0)
+- **Diabetes**: Yes (1) No (0)
+- **Hyperlipidemia**: Yes (1) No (0)
+
+
