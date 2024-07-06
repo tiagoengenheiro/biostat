@@ -213,8 +213,8 @@ dim(df)[1]==512
 # - Hypertension
 # - Diabetes
 # - Hyperlipdmia
-# - BMI ?
 
+#SMOKING STATUS
 #Load Questionnaire Data (1999-2004)
 df_questionnaire_99_00=read_xpt("data/1999-00/Questionnaire/SMQ.XPT")
 df_questionnaire_01_02=read_xpt("data/2001-02/Questionnaire/SMQ_B.XPT")
@@ -225,7 +225,6 @@ df_questionnaire <- bind_rows(df_questionnaire_99_00, df_questionnaire_01_02,df_
 
 #Select only the SEQN that are present in the df
 
-#Smoking status
 df_smoking <- df_questionnaire %>% select(SEQN,SMQ020,SMQ040,SMD070,SMQ050Q)
 ## Smoking status variable
 #SMQ020: Smoked at least 100 cigarettes in life
@@ -245,7 +244,10 @@ df_with_smoking[df_with_smoking$SMQ020==2,]$SMQ040
 #If smoked at least 100 cigarettes and now smokes -> current smoker (2)
 sum(is.na(df_with_smoking$SMQ020))
 df_with_smoking[is.na(df_with_smoking$SMQ020),]
-df_with_smoking$SmokingStatus <- ifelse(df_with_smoking$SMQ020==2,0,ifelse(df_with_smoking$SMQ040!=3,1,2))
+df_with_smoking$SmokingStatus <- ifelse(
+    !is.na(df_with_smoking$SMQ020) & df_with_smoking$SMQ020==2,0,
+    ifelse(df_with_smoking$SMQ040!=3,1,2))
+
 table(df_with_smoking$SmokingStatus)
 sum(is.na(df_with_smoking$SmokingStatus))
 
@@ -255,7 +257,7 @@ colnames(df)
 
 
 
-# Hypertension
+# HYPERTENSION
 
 #Load Examination Data (1999-2004)  for Blood Pressure
 df_blood_pressure_99_00=read_xpt("data/1999-00/Examination/BPX.XPT")

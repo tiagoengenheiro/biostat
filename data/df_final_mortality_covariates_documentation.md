@@ -54,3 +54,13 @@ If this document is not rendered already and you want to it rendered choose one 
 - **Hyperlipidemia**: Yes (1) No (0)
 
 
+##### DIABETES
+- **1** if:
+    - Doctor told that patient has diabetes (Self-reported)
+    - Patient is taking insulin now (Self-reported)
+    - Patient takes pills to lower blood sugar (Self-reported)
+    - Fasting Glucose values >=126 mg/dL
+    - Non-Fasting Glucose values >= 200 mg/dL
+    - diabetes listed has multiple cause of death 
+- **0** otherwise
+
