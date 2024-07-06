@@ -198,6 +198,8 @@ write.csv(df_final_mortality, "data/df_final_mortality.csv", row.names = FALSE)
 
 #Do a function of fibonacci for the first 10 numbe
 
+
+#ADDING MORE COVARIATES
 rm(list = ls())
 #Load df_final mortality
 df <- read.csv("data/df_final_mortality.csv")
@@ -278,47 +280,95 @@ df_with_blood_pressure$BPD <- df_with_blood_pressure$BPXDAR
 df_with_blood_pressure <- df_with_blood_pressure %>% select(-BPXSAR, -BPXDAR, -BPXSY1, -BPXSY2, -BPXSY3, -BPXSY4, -BPXDI1, -BPXDI2, -BPXDI3, -BPXDI4)
 dim(df_with_blood_pressure)[1]==512
 
-#Load prescription medication data in Questionnaire Data (1999-2004)
-df_prescription_99_00=read_xpt("data/1999-00/Questionnaire/RXQ_RX.XPT")
-df_prescription_01_02=read_xpt("data/2001-02/Questionnaire/RXQ_RX_B.XPT")
-df_prescription_03_04=read_xpt("data/2003-04/Questionnaire/RXQ_RX_C.XPT")
 
-#Bind prescription data
-df_prescription <- bind_rows(df_prescription_99_00, df_prescription_01_02,df_prescription_03_04)
+#Load BPQ from Questionnaire Data
 
-#Select only FDACODE1-6 and SEQN
-df_prescription <- df_prescription %>% select(SEQN,FDACODE1,FDACODE2,FDACODE3,FDACODE4,FDACODE5,FDACODE6)
+df_bpq_99_00=read_xpt("data/1999-00/Questionnaire/BPQ.XPT")
+df_bpq_01_02=read_xpt("data/2001-02/Questionnaire/BPQ_B.XPT")
+df_bpq_03_04=read_xpt("data/2003-04/Questionnaire/BPQ_C.XPT")
 
-#For each SEQN check if FDACODE1 to FDACODE6 equals to 0506 (hypertension medication)
-df_prescription$hypertensionmed <- ifelse(
-    !is.na(df_prescription$FDACODE1) & df_prescription$FDACODE1=="0506" | 
-    !is.na(df_prescription$FDACODE2) & df_prescription$FDACODE2=="0506" | 
-    !is.na(df_prescription$FDACODE3) & df_prescription$FDACODE3=="0506" | 
-    !is.na(df_prescription$FDACODE4) & df_prescription$FDACODE4=="0506" | 
-    !is.na(df_prescription$FDACODE5) & df_prescription$FDACODE5=="0506" | 
-    !is.na(df_prescription$FDACODE6) & df_prescription$FDACODE6=="0506",1,0)
-
-#Since each SEQN can have multiple rows, we group by SEQN and check if patient is taking at least one hypertension medication
-df_prescription=df_prescription %>% group_by(SEQN) %>% summarise(hypertensionmed=ifelse(sum(hypertensionmed,na.rm=TRUE)>0,1,0))
-#Create a new df with only SEQN hypertensionmed=1 if 
-dim(df_prescription)
-#Join with df_with_blood_pressure
-df_hypertension<- inner_join(df_with_blood_pressure, df_prescription, by = "SEQN")
+#Bind BPQ data
+df_bpq <- bind_rows(df_bpq_99_00, df_bpq_01_02,df_bpq_03_04)
+#Select BQP040 and SEQN
+#"BPQ040A - Taking prescription for hypertension"
+df_bpq <- df_bpq %>% select(SEQN,BPQ040A)
+dim(df_bpq)
+df_hypertension<- inner_join(df_with_blood_pressure, df_bpq, by = "SEQN")
 table(df_hypertension$hypertensionmed)
-
+dim(df_hypertension)[1]==512
 # Hypertension
 df_hypertension$Hypertension <- ifelse( 
     !is.na(df_hypertension$BPS) & df_hypertension$BPS>=140 | 
-    !is.na(df_hypertension$BPD) & df_hypertension$BPD>=90 | 
-    !is.na(df_hypertension$hypertensionmed) & df_hypertension$hypertensionmed==1 |
-    !is.na(df_hypertension$hyperten) & df_hypertension$hyperten==1 ,1,0)
+    !is.na(df_hypertension$BPD) & df_hypertension$BPD>=90 |
+    !is.na(df_hypertension$BPQ040A) & df_hypertension$BPQ040A==1 |
+    !is.na(df_hypertension$hyperten) & df_hypertension$hyperten==1
+    ,1,0)
 table(df_hypertension$Hypertension)
 sum(is.na(df_hypertension$Hypertension))
 colnames(df_hypertension)
 
-df <- df_hypertension %>% select(-BPS, -BPD, -hypertensionmed, -hyperten)
+df <- df_hypertension %>% select(-BPS, -BPD, -hyperten, -BPQ040A)
 colnames(df)
-
 #save new df
 write.csv(df, "data/df_final_mortality_covariates.csv", row.names = FALSE)
+
+
+
+## HYPERLIPIDEMIA
+rm(list = ls())
+#Load new df for Hyperlipidemia
+df <- read.csv("data/df_final_mortality_covariates.csv")
+
+#BPQ080 - Doctor told you - high cholesterol level
+#BPQ090D - Told to take prescription for cholesterol
+
+#Load BPQ from Questionnaire Data
+
+df_bpq_99_00=read_xpt("data/1999-00/Questionnaire/BPQ.XPT")
+df_bpq_01_02=read_xpt("data/2001-02/Questionnaire/BPQ_B.XPT")
+df_bpq_03_04=read_xpt("data/2003-04/Questionnaire/BPQ_C.XPT")
+
+#Bind BPQ data
+df_bpq <- bind_rows(df_bpq_99_00, df_bpq_01_02,df_bpq_03_04)
+#Select SEQN, BQP080 and BPQ090D
+#BPQ080 - Doctor told you - high cholesterol level
+#BPQ090D - Told to take prescription for cholesterol
+df_bpq <- df_bpq %>% select(SEQN,BPQ080,BPQ090D)
+
+#Load Cholesterol Labolatory Data
+df_cholesterol_99_00=read_xpt("data/1999-00/Laboratory/LAB13.XPT")
+df_cholesterol_01_02=read_xpt("data/2001-02/Laboratory/L13_B.XPT")
+df_cholesterol_03_04=read_xpt("data/2003-04/Laboratory/L13_C.XPT")
+
+#Bind Cholesterol data
+df_cholesterol <- bind_rows(df_cholesterol_99_00, df_cholesterol_01_02,df_cholesterol_03_04)
+
+#Select LBXTC and SEQN
+
+df_cholesterol <- df_cholesterol %>% select(SEQN,LBXTC)
+
+#LBXTC - Total cholesterol (mg/dL)
+df_hyperlipidemia <- inner_join(df, df_bpq, by = "SEQN")
+df_hyperlipidemia <- inner_join(df_hyperlipidemia, df_cholesterol, by = "SEQN")
+dim(df_hyperlipidemia)[1]==512 #No data lost with inner join
+colnames(df_hyperlipidemia)
+#summary(df_hyperlipidemia$LBXTC)
+#sum(is.na(df_hyperlipidemia$LBXTC))
+#Which indicator is better prescription or high cholesterol
+df_hyperlipidemia$Hyperlipidemia <- ifelse(
+    #!is.na(df_hyperlipidemia$BPQ080) & df_hyperlipidemia$BPQ080==1|
+    !is.na(df_hyperlipidemia$BPQ090D) & df_hyperlipidemia$BPQ090D==1|
+    !is.na(df_hyperlipidemia$LBXTC) & df_hyperlipidemia$LBXTC>=240
+    ,1,0)
+    
+
+table(df_hyperlipidemia$Hyperlipidemia)
+sum(is.na(df_hyperlipidemia$Hyperlipidemia))
+colnames(df_hyperlipidemia)
+df <- df_hyperlipidemia %>% select(-BPQ080, -BPQ090D, -LBXTC)
+colnames(df)
+#save new df
+write.csv(df, "data/df_final_mortality_covariates.csv", row.names = FALSE)
+
+##DIABETES
 
