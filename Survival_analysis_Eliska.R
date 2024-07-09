@@ -17,13 +17,14 @@ library(psych)
 #install.packages("ltm")
 library("ltm")
 library(rstatix)
+library(MASS)
 
 ##################################################################################################
 #-----1-------Preliminary analysis
 ##################################################################################################
 
 #reading data
-data <- read.csv("df_final_mortality.csv")
+data <- read.csv("df_final_mortality_covariates.csv")
 head(data)
 
 #dataset info
@@ -42,7 +43,8 @@ data$CaffeinatedStatus <- ifelse(is.na(data$CaffeinatedStatus) & data$Coffee == 
 
 
 #creating the categorical variables according to the TABLE 1 in Journal of periodontology
-data <- data%>% 
+#creating the categorical variables according to the TABLE 1 in Journal of periodontology
+data<- data%>% 
   rename(Age_num = RIDAGEYR,
          Sex = RIAGENDR,
          Education = DMDEDUC,
@@ -58,9 +60,9 @@ data <- data%>%
          CaffeinatedStatus = as.factor(CaffeinatedStatus),
          SugaryStatus = as.factor(SugaryStatus),
          FattyStatus = as.factor(FattyStatus),
-         MilkContainingStatus = as.factor(MilkContainingStatus),
-         diabetes = as.factor(diabetes),
-         hyperten = as.factor(hyperten)) %>%
+         Hyperlipidemia = as.factor(Hyperlipidemia),
+         SmokingStatus = as.factor(SmokingStatus),
+         MilkContainingStatus = as.factor(MilkContainingStatus)) %>%
   mutate(Sex = plyr::revalue(Sex, c("1" = "Male","2" = "Female")),
          Education = case_when(Education == "1" ~ "Less Than High School",
                                Education == "2" ~ "High School",
@@ -76,21 +78,27 @@ data <- data%>%
                           Race == "3" ~ "Non-Hispanic White",
                           Race == "2" | Race == "5" ~ "Other"),
          Race = as.factor(Race),
+         SmokingStatus = case_when(SmokingStatus == "0" ~ "Never Smoked",
+                                   SmokingStatus == "1" ~ "Former Smoker",
+                                   SmokingStatus == "2" ~ "Current Smoker"),
+         SmokingStatus = as.factor(SmokingStatus),
+         Hypertension = case_when(Hypertension == "0" ~ "No",
+                                  Hypertension == "1" ~ "Yes"),
+         Hypertension = as.factor(Hypertension),
+         Hyperlipidemia = case_when(Hyperlipidemia == "0" ~ "No",
+                                    Hyperlipidemia == "1" ~ "Yes"),
+         Hyperlipidemia = as.factor(Hyperlipidemia),
+         Diabetes = case_when(Diabetes == "0" ~ "No",
+                              Diabetes == "1" ~ "Yes"),
+         Diabetes = as.factor(Diabetes),
          Age_fct = case_when(Age_num < 65 ~ "Age < 65 years",
                              Age_num >= 65 ~ "Age >= 65 years"),
-         Age_fct = as.factor(Age_fct),
-         CaffeinatedStatus = case_when(CaffeinatedStatus == "0" ~ "Without Caffeine",
-                                       CaffeinatedStatus == "1" ~ "With Caffeine",
-                                       CaffeinatedStatus == "did not drink any coffee" ~ "Did not consume coffee"),
-         CaffeinatedStatus = as.factor(CaffeinatedStatus),
-         Disease = case_when(diabetes == "0" & hyperten == "0" ~ "0",
-                             mortstat == "0" ~ "alive",
-                             diabetes == "1" & hyperten == "0" ~ "1",
-                             diabetes == "0" & hyperten == "1" ~ "1",
-                             diabetes == "1" & hyperten == "1" ~ "2"),
-         Disease = as.factor(Disease)) 
+         Age_fct = as.factor(Age_fct)) %>%
+  filter(LEXLABPI < 1.40 & LEXRABPI <1.40) #filtering according to the first paragraph in the Results section in the "Secondary prevention..." article
+
 
 summary(data)
+
 
 
 data %>%
@@ -146,24 +154,64 @@ ggsurvplot(model0, data = data, pval = FALSE, conf.int=TRUE,xlim = c(0,250), sur
 
 survdiff(Surv(time = permth_int, event = mortstat) ~ Coffee, data = data)
 
+
+
+
+
+
 ##-------------------------------- Cox's PH regression model
   #Cox is good only for the HR (not for predictions!!!)
 
+#model only with coffee
 model1 <- coxph(Surv(permth_int, mortstat) ~ Coffee, data = data) #the same as model0, but extracting the HR
 summary(model1)
 
+
+### exploring covariates:
+# - Hyperlipidmia - not significant, which could be seen also in Preliminary in the analysis of pivot tables
+model_hyperlipidemia <- coxph(Surv(permth_int, mortstat) ~ Coffee + Hyperlipidemia, data = data) 
+summary(model_hyperlipidemia)
+
+# - Smoking
+model_smoking <- coxph(Surv(permth_int, mortstat) ~ Coffee + SmokingStatus, data = data) 
+summary(model_smoking)
+
+# - Diabetes (use glicemia as proxy)
+
+model_diabetes <- coxph(Surv(permth_int, mortstat) ~ Coffee + Diabetes, data = data) 
+summary(model_diabetes)
+
+# - High BP
+
+model_hypertension <- coxph(Surv(permth_int, mortstat) ~ Coffee + Hypertension, data = data) 
+summary(model_hypertension)
+
+
+### stepwise regression:
+#removing the missing values
+data_clean <- data %>% select(Coffee,Age_fct,Sex,Race,PovertyIncome,Education,SmokingStatus,Hypertension,Hyperlipidemia,Diabetes,permth_int,mortstat)
+data_clean <- na.omit(data_clean)
+
+#full model
+model_full <- coxph(Surv(permth_int, mortstat) ~ Coffee + Age_fct + Sex + Race + 
+                      PovertyIncome + Education + SmokingStatus + Hypertension
+                    + Hyperlipidemia + Diabetes, data = data_clean)
+summary(model_full)
+
+stepwise_model <- stepAIC(model_full, direction = "both")
+#selected variables are Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension
+
+#fitind everything with new data:
 model2 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
 summary(model2)
 
 model3 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
 
+model4 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension, data = data)
+summary(model4)
 
-#model4 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
-#summary(model4)
 
-#model4 <- coxph(Surv(permth_int, mortstat) ~ CoffeeDisease, data = data)
-#summary(model4)
 
 #-------ASSUMPTIONS
 #Test the Proportional Hazards Assumption of a Cox Regression
@@ -172,7 +220,7 @@ summary(model3)
 cox.zph(model1) 
 cox.zph(model2) 
 cox.zph(model3) 
-#cox.zph(model4)
+cox.zph(model4)
 
 #checking the linearity 
 plot(predict(model2), residuals(model2,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
@@ -195,19 +243,31 @@ lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col 
 #print(selected_points)
 #View(data[selected_points,])
 
+plot(predict(model4), residuals(model4,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
+abline(h=0)
+lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col = "red")
+
+# Use identify to interactively select points
+#selected_points <- identify(predict(model4), residuals(model4,type = "martingale"), labels = seq_along(predict(model3)))
+# Print the indices of the selected points
+#print(selected_points)
+#View(data[selected_points,])
+
 
 #----comparing nested models:
 #anova(model2,model3,test = "LRT")
 AIC(model1)
 AIC(model2)
 AIC(model3)
+AIC(model4)
 BIC(model1)
 BIC(model2)
 BIC(model3)
+BIC(model4)
 #the higher the concordance the better
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
-
+summary(model4)$concordance[1]
 
 
 #-------COFFEE INTAKE
@@ -238,7 +298,7 @@ summary(model3)
 model0 <- survfit(Surv(time = permth_int, event = mortstat) ~ CaffeinatedStatus, data = data, type = "kaplan-meier")
 
 ggsurvplot(model0, data = data, pval = FALSE, conf.int=TRUE,xlim = c(0,250), surv.median.line = "hv",
-           legend.labs = c("Did not consume coffee", "With caffeine", "Without caffeine")) 
+           legend.labs = c("Without caffeine","With caffeine","Did not consume coffee"  )) 
 
 
 #testing if the two survival functions are significantly different: LOG-RANK TEST
@@ -247,31 +307,71 @@ ggsurvplot(model0, data = data, pval = FALSE, conf.int=TRUE,xlim = c(0,250), sur
 
 survdiff(Surv(time = permth_int, event = mortstat) ~ CaffeinatedStatus, data = data)
 
+
 ##-------------------------------- Cox's PH regression model
 #Cox is good only for the HR (not for predictions!!!)
 
+#model only with coffee
 model1 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus, data = data) #the same as model0, but extracting the HR
 summary(model1)
 
-model2 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
+
+### exploring covariates:
+# - Hyperlipidmia - not significant, which could be seen also in Preliminary in the analysis of pivot tables
+model_hyperlipidemia <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus + Hyperlipidemia, data = data) 
+summary(model_hyperlipidemia)
+
+# - Smoking
+model_smoking <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus + SmokingStatus, data = data) 
+summary(model_smoking)
+
+# - Diabetes (use glicemia as proxy)
+
+model_diabetes <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus + Diabetes, data = data) 
+summary(model_diabetes)
+
+# - High BP
+
+model_hypertension <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus + Hypertension, data = data) 
+summary(model_hypertension)
+
+
+### stepwise regression:
+#removing the missing values
+data_clean <- data %>% select(CaffeinatedStatus,Age_fct,Sex,Race,PovertyIncome,Education,SmokingStatus,Hypertension,Hyperlipidemia,Diabetes,permth_int,mortstat)
+data_clean <- na.omit(data_clean)
+
+#full model
+model_full <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus + Age_fct + Sex + Race + 
+                      PovertyIncome + Education + SmokingStatus + Hypertension
+                    + Hyperlipidemia + Diabetes, data = data_clean)
+summary(model_full)
+
+stepwise_model <- stepAIC(model_full, direction = "both")
+#selected variables are Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension
+
+#fitting everything with new data:
+model2 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct, data = data)
 summary(model2)
 
-model3 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome, data = data)
+model3 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model3)
 
+model4 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome + Hypertension + SmokingStatus, data = data)
+summary(model4)
 
 
-model1 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "With Caffeine"), data = data) #the same as model0, but extracting the HR
-summary(model1)
+#fitting everything with new data:
+model2_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct, data = data)
+summary(model2_rel)
 
-model2 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "With Caffeine"),+Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
-summary(model2)
+model3_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome, data = data)
+summary(model3_rel)
 
-model3 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "With Caffeine"),+Sex+Race+Age_fct+PovertyIncome, data = data)
-summary(model3)
+model4_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome + Hypertension, data = data)
+summary(model4_rel)
 
-#model4 <- coxph(Surv(permth_int, mortstat) ~ CaffeinatedStatus+Sex+Race+Age_fct+PovertyIncome+diabetes+hyperten, data = data)
-#summary(model4)
+
 
 #-------ASSUMPTIONS
 #Test the Proportional Hazards Assumption of a Cox Regression
@@ -280,7 +380,7 @@ summary(model3)
 cox.zph(model1) 
 cox.zph(model2) 
 cox.zph(model3) 
-#cox.zph(model4)
+cox.zph(model4)
 
 #checking the linearity 
 plot(predict(model2), residuals(model2,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
@@ -293,15 +393,25 @@ lines(smooth.spline(predict(model2), residuals(model2,type = "martingale")),col 
 #print(selected_points)
 #View(data[selected_points,])
 
-plot(predict(model3), residuals(model3,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
+plot(predict(model3), residuals(model3,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
 abline(h=0)
-#lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col = "red")
+lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col = "red")
+
 # Use identify to interactively select points
 #selected_points <- identify(predict(model3), residuals(model3,type = "martingale"), labels = seq_along(predict(model3)))
 # Print the indices of the selected points
 #print(selected_points)
 #View(data[selected_points,])
 
+plot(predict(model4), residuals(model4,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
+abline(h=0)
+lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col = "red")
+
+# Use identify to interactively select points
+#selected_points <- identify(predict(model4), residuals(model4,type = "martingale"), labels = seq_along(predict(model3)))
+# Print the indices of the selected points
+#print(selected_points)
+#View(data[selected_points,])
 
 
 #----comparing nested models:
@@ -309,12 +419,19 @@ abline(h=0)
 AIC(model1)
 AIC(model2)
 AIC(model3)
+AIC(model4)
 BIC(model1)
 BIC(model2)
 BIC(model3)
+BIC(model4)
+
 #the higher the concordance the better
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
+summary(model4)$concordance[1]
+
+
+
 
 
 

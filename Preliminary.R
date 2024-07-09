@@ -22,7 +22,7 @@ library(readxl)
 ##################################################################################################
 
 #reading data
-data <- read.csv("df_final_mortality.csv")
+data <- read.csv("df_final_mortality_covariates.csv")
 head(data)
 
 #dataset info
@@ -41,7 +41,7 @@ data$CaffeinatedStatus <- ifelse(is.na(data$CaffeinatedStatus) & data$Coffee == 
 
 
 #creating the categorical variables according to the TABLE 1 in Journal of periodontology
-data <- data%>% 
+data<- data%>% 
   rename(Age_num = RIDAGEYR,
          Sex = RIAGENDR,
          Education = DMDEDUC,
@@ -57,9 +57,9 @@ data <- data%>%
          CaffeinatedStatus = as.factor(CaffeinatedStatus),
          SugaryStatus = as.factor(SugaryStatus),
          FattyStatus = as.factor(FattyStatus),
-         MilkContainingStatus = as.factor(MilkContainingStatus),
-         diabetes = as.factor(diabetes),
-         hyperten = as.factor(hyperten)) %>%
+         Hyperlipidemia = as.factor(Hyperlipidemia),
+         SmokingStatus = as.factor(SmokingStatus),
+         MilkContainingStatus = as.factor(MilkContainingStatus)) %>%
   mutate(Sex = plyr::revalue(Sex, c("1" = "Male","2" = "Female")),
          Education = case_when(Education == "1" ~ "Less Than High School",
                                Education == "2" ~ "High School",
@@ -75,9 +75,24 @@ data <- data%>%
                           Race == "3" ~ "Non-Hispanic White",
                           Race == "2" | Race == "5" ~ "Other"),
          Race = as.factor(Race),
+         SmokingStatus = case_when(SmokingStatus == "0" ~ "Never Smoked",
+                                   SmokingStatus == "1" ~ "Former Smoker",
+                                   SmokingStatus == "2" ~ "Current Smoker"),
+         SmokingStatus = as.factor(SmokingStatus),
+         Hypertension = case_when(Hypertension == "0" ~ "No",
+                                  Hypertension == "1" ~ "Yes"),
+         Hypertension = as.factor(Hypertension),
+         Hyperlipidemia = case_when(Hyperlipidemia == "0" ~ "No",
+                                    Hyperlipidemia == "1" ~ "Yes"),
+         Hyperlipidemia = as.factor(Hyperlipidemia),
+         Diabetes = case_when(Diabetes == "0" ~ "No",
+                              Diabetes == "1" ~ "Yes"),
+         Diabetes = as.factor(Diabetes),
          Age_fct = case_when(Age_num < 65 ~ "Age < 65 years",
                              Age_num >= 65 ~ "Age >= 65 years"),
-         Age_fct = as.factor(Age_fct)) 
+         Age_fct = as.factor(Age_fct)) %>%
+  filter(LEXLABPI < 1.40 & LEXRABPI <1.40) #filtering according to the first paragraph in the Results section in the "Secondary prevention..." article
+
 
 summary(data)
 
@@ -285,6 +300,82 @@ df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
   pivot_wider(names_from = mortstat, values_from = percentage)
 df_with_totals
 
+#Diabetes - the distribution of Diabetes groups for people having mortstat = 0, or mortstat = 1
+#NAN's excluded
+pivot_counts <- data[complete.cases(data$Diabetes), ] %>%
+  group_by(mortstat,Diabetes) %>%
+  summarise(count = n()) %>%
+  ungroup()
+pivot_counts 
+
+pivot_totals <- data[complete.cases(data$Diabetes), ]%>%
+  group_by(mortstat) %>%
+  summarise(total_count = n())
+pivot_totals
+
+
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
+  mutate(percentage = count / total_count * 100)%>%
+  pivot_wider(names_from = mortstat, values_from = percentage)
+df_with_totals
+
+#Hypertension - the distribution of Hypertension groups for people having mortstat = 0, or mortstat = 1
+#NAN's excluded
+pivot_counts <- data[complete.cases(data$Hypertension), ] %>%
+  group_by(mortstat,Hypertension) %>%
+  summarise(count = n()) %>%
+  ungroup()
+pivot_counts 
+
+pivot_totals <- data[complete.cases(data$Hypertension), ]%>%
+  group_by(mortstat) %>%
+  summarise(total_count = n())
+pivot_totals
+
+
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
+  mutate(percentage = count / total_count * 100)%>%
+  pivot_wider(names_from = mortstat, values_from = percentage)
+df_with_totals
+
+
+#Hyperlipidemia - the distribution of Hyperlipidemia groups for people having mortstat = 0, or mortstat = 1
+#NAN's excluded
+pivot_counts <- data[complete.cases(data$Hyperlipidemia), ] %>%
+  group_by(mortstat,Hyperlipidemia) %>%
+  summarise(count = n()) %>%
+  ungroup()
+pivot_counts 
+
+pivot_totals <- data[complete.cases(data$Hyperlipidemia), ]%>%
+  group_by(mortstat) %>%
+  summarise(total_count = n())
+pivot_totals
+
+
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
+  mutate(percentage = count / total_count * 100)%>%
+  pivot_wider(names_from = mortstat, values_from = percentage)
+df_with_totals
+
+#SmokingStatus - the distribution of SmokingStatus groups for people having mortstat = 0, or mortstat = 1
+#NAN's excluded
+pivot_counts <- data[complete.cases(data$SmokingStatus), ] %>%
+  group_by(mortstat,SmokingStatus) %>%
+  summarise(count = n()) %>%
+  ungroup()
+pivot_counts 
+
+pivot_totals <- data[complete.cases(data$SmokingStatus), ]%>%
+  group_by(mortstat) %>%
+  summarise(total_count = n())
+pivot_totals
+
+
+df_with_totals <- left_join(pivot_counts, pivot_totals, by = "mortstat")%>%
+  mutate(percentage = count / total_count * 100)%>%
+  pivot_wider(names_from = mortstat, values_from = percentage)
+df_with_totals
 
 #### CHI-SQUARED test for categoricals
 #Null hypotesis: 
@@ -321,11 +412,15 @@ chisq.test(table(data$Coffee,data$mortstat))
 #Caffeinated Status
 chisq.test(table(data$CaffeinatedStatus,data$mortstat))
 
-#-----------------multiple cause of death
+#SmokingStatus
+chisq.test(table(data$SmokingStatus,data$mortstat))
 
-data_both <- data%>%filter(diabetes == "1" & hyperten == "1" ) 
-data_hyp <- data%>%filter(diabetes == "0" & hyperten == "1" ) 
-data_diab <- data%>%filter(diabetes == "1" & hyperten == "0" ) 
-data_PAD <- data%>%filter(diabetes == "0" & hyperten == "0" )
+#Hypertension
+chisq.test(table(data$Hypertension,data$mortstat))
 
-summary(data)
+#Hyperlipidemia
+chisq.test(table(data$Hyperlipidemia,data$mortstat))
+
+#Diabetes
+chisq.test(table(data$Diabetes,data$mortstat))
+
