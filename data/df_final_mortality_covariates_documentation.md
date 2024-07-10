@@ -55,12 +55,33 @@ If this document is not rendered already and you want to it rendered choose one 
 
 
 ##### DIABETES
-- **1** if:
-    - Doctor told that patient has diabetes (Self-reported)
-    - Patient is taking insulin now (Self-reported)
-    - Patient takes pills to lower blood sugar (Self-reported)
-    - Fasting Glucose values >=126 mg/dL
-    - Non-Fasting Glucose values >= 200 mg/dL
-    - diabetes listed has multiple cause of death 
+- **1** if one of the following conditions is true:
+    - Doctor told that patient has diabetes (Self-reported) 
+    - Patient is taking insulin now (Self-reported) 
+    - Patient takes pills to lower blood sugar (Self-reported) 
+    - Fasting Glucose values >=126 mg/dL 
+    - Non-Fasting Glucose values >= 200 mg/dL 
+    - Diabetes listed as multiple cause of death (from mortality data)
 - **0** otherwise
+
+##### Hypertension
+- **1** if one of the following conditions is true:
+    - Systolic Blood Pressure (SBP) >=140 mmHg
+    - Diastolic Blood Pressure (DBP)>=90 mmHg
+    - Taking prescription medication for hypertension (self-reported)
+    - Hypertension listed as multiple cause of death (from mortality data)
+- **0** otherwise
+
+##### Hyperlipedemia
+- **1** if one of the following conditions is true:
+    - Diagnosis of elevated cholesterol by a physician (self-reported)
+    - Total Cholesterol Level >= 240 mg/dL
+- **0** otherwise
+
+##### Smoking Status
+- **0** (Never Smoked): Doesn’t smoke now and smoked <100 cigarettes
+- **1** (Former Smoker): Doesn’t smoke now and smoked >=100 cigarettes
+- **2**  (Current Smoker): Now Smokes 
+Now - At the time of the questionnaire 
+
 
