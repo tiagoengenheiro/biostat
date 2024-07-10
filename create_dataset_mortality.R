@@ -244,9 +244,13 @@ df_with_smoking[df_with_smoking$SMQ020==2,]$SMQ040
 #If smoked at least 100 cigarettes and now smokes -> current smoker (2)
 sum(is.na(df_with_smoking$SMQ020))
 df_with_smoking[is.na(df_with_smoking$SMQ020),]
+# df_with_smoking$SmokingStatus <- ifelse(
+#     !is.na(df_with_smoking$SMQ020) & df_with_smoking$SMQ020==2,0,
+#     ifelse(df_with_smoking$SMQ040!=3,1,2))
+
 df_with_smoking$SmokingStatus <- ifelse(
-    !is.na(df_with_smoking$SMQ020) & df_with_smoking$SMQ020==2,0,
-    ifelse(df_with_smoking$SMQ040!=3,1,2))
+    !is.na(df_with_smoking$SMQ040) & (df_with_smoking$SMQ040==2 | df_with_smoking$SMQ040==1),2,
+    ifelse(!is.na(df_with_smoking$SMQ020) & df_with_smoking$SMQ020==1,1,0))
 
 table(df_with_smoking$SmokingStatus)
 sum(is.na(df_with_smoking$SmokingStatus))
@@ -358,8 +362,8 @@ colnames(df_hyperlipidemia)
 #sum(is.na(df_hyperlipidemia$LBXTC))
 #Which indicator is better prescription or high cholesterol
 df_hyperlipidemia$Hyperlipidemia <- ifelse(
-    #!is.na(df_hyperlipidemia$BPQ080) & df_hyperlipidemia$BPQ080==1|
-    !is.na(df_hyperlipidemia$BPQ090D) & df_hyperlipidemia$BPQ090D==1|
+    !is.na(df_hyperlipidemia$BPQ080) & df_hyperlipidemia$BPQ080==1|
+    #!is.na(df_hyperlipidemia$BPQ090D) & df_hyperlipidemia$BPQ090D==1|
     !is.na(df_hyperlipidemia$LBXTC) & df_hyperlipidemia$LBXTC>=240
     ,1,0)
     
@@ -430,3 +434,4 @@ names(df)
 
 #save new df
 write.csv(df, "data/df_final_mortality_covariates.csv", row.names = FALSE)
+
