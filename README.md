@@ -89,7 +89,7 @@ We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/
 - Most relevant variables are:
     * **mortstat** (mortality status: dead(1) or alive(0))
     * **permth_int** (months after follow-up interview)
-- More information about this data in[data/mortality_info](data/mortality_info/) folder.
+- More information about this data in [data/mortality_info](data/mortality_info/) folder.
 
 ### Additional Covariates
 To obtain **Diabetes**, **Hypertension**, **Hiperlipidmia** and **SmokingStatus** several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data following the criteria presented in the [papers](#papers), specially in [2007 paper](papers/perlstein-et-al-2007-serum-total-bilirubin-level-and-prevalent-lower-extremity-peripheral-arterial-disease.pdf). The criteria used are explained in detail in [data/df_final_mortality_covariates_documentation.md](data/df_final_mortality_covariates_documentation.md#covariates-new-ones)
