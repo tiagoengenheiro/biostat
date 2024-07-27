@@ -17,7 +17,7 @@ The dataset initially considered was [data/df_final_mortality.csv](data/df_final
 (2023) - [The associations of coffee consumption, coffee types, and caffeine metabolites with periodontitis: Results from NHANES 2009–2014](/papers/Journal%20of%20Periodontology%20-%202023%20-%20Chen%20-%20The%20associations%20of%20coffee%20consumption%20%20coffee%20types%20%20and%20caffeine%20metabolites.pdf)
 
 ## General Information
-We are going to consider 3 data periods (1999-2000 + 2001-2002 + 2003-2004) which were the periods considered by the 2011 paper. We could use more periods, but these were the only ones where data was collected to detect our diease (Peripheral Arterial Disease or PAD) 
+We considered 3 data periods (1999-2000 + 2001-2002 + 2003-2004) which were the periods also considered by the 2011 paper. We could use more periods, but these were the only ones where data was collected to detect our diease (Peripheral Arterial Disease or PAD) 
 
 
 ## NHANES Data (by Year):
