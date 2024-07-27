@@ -1,15 +1,16 @@
 ## Report URL
 [Report view link (Overleaf)](https://www.overleaf.com/read/fgwtctfwcqzr#96a962)
-Note: this report refers to the [data/df_final_mortality.csv](data/df_final_mortality.csv)
+Note: this report refers to the [data/df_final_mortality.csv](data/df_final_mortality.csv) dataset.
 
 
 ## Datasets
 * [data/df_final_mortality.csv](data/df_final_mortality.csv)
 * [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) 
 
-The dataset initially considered was [data/df_final_mortality.csv](data/df_final_mortality.csv) which was subsequent extended into [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) with the incorporation and modification of the following covariates:  Diabetes, Hypertension, Hiperlipidmia and SmokingStatus. The datasets were obtained using [NHANES data](#nhanes-data-by-year) and with data and criteria provided by the [papers](#papers). For variables documentation refer to [data/df_final_mortality_covariates_documentation.md](data/df_final_mortality_covariates_documentation.md)
+The dataset initially considered was [data/df_final_mortality.csv](data/df_final_mortality.csv) (dataset of the report) which was subsequent extended into [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) with the incorporation and modification of the following covariates:  Diabetes, Hypertension, Hiperlipidmia and SmokingStatus. The datasets were obtained using [NHANES data](#nhanes-data-by-year) and with data and criteria provided by the [papers](#papers). For variables documentation refer to [data/df_final_mortality_covariates_documentation.md](data/df_final_mortality_covariates_documentation.md)
 
 ## Papers 
+(2007) - [Serum Total Bilirubin Level and Prevalent Lower-Extremity Peripheral Arterial Disease](/papers/perlstein-et-al-2007-serum-total-bilirubin-level-and-prevalent-lower-extremity-peripheral-arterial-disease.pdf)
 (2011) - [Secondary Prevention and Mortality in Peripheral Arterial Disease](/papers/pande-et-al-2011-secondary-prevention-and-mortality-in-peripheral-artery-disease.pdf)
 
 (2023) - [The associations of coffee consumption, coffee types, and caffeine metabolites with periodontitis: Results from NHANES 2009–2014](/papers/Journal%20of%20Periodontology%20-%202023%20-%20Chen%20-%20The%20associations%20of%20coffee%20consumption%20%20coffee%20types%20%20and%20caffeine%20metabolites.pdf)
@@ -86,4 +87,4 @@ We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/
 - More information about this data in [mortality_info folder](mortality_info/)
 
 #### Additional Covariates
-To obtain Diabetes, Hypertension, Hiperlipidmia and SmokingStatus several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data. 
+To obtain Diabetes, Hypertension, Hiperlipidmia and SmokingStatus several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data following the criteria presented in the [papers](#papers).
