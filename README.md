@@ -32,8 +32,9 @@ From the links above it's possible to access all types of data:
 * **Demographics Data** (here is the data for possible covariates age,sex,race, etc)
 * **Dietary Data** (here is the data for the coffee types)
 * **Examination Data** (here is the data to identify our disease)
-* **Laboratory Data** (here would be the data for the coffee metabolites but this data is not available in our 1999-2004 interval)
-* **etc** (not so relevant for us)
+* **Laboratory Data** (here would be the data for the coffee metabolites but this data is not available in our 1999-2004 interval. Nonetheless this data was used to retrieve information to be used as criteria for covariates such as SmokingStatus)
+* **Questionnaire Data** (This data was also used to retrieve information to be used as criteria for covariates)
+* **Mortality Data** (data containing survival time of patients)
 
 ### Demographics Data
 From the Demographics Data we retrieved the following Data File:
@@ -85,7 +86,10 @@ We arrived at the following variables:
 ### Mortality Data
 We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/data-linkage/mortality-public.htm).
 - We speficially retrieved mortality data for the considered years (**1999-2004**)
-- More information about this data in [mortality_info folder](mortality_info/)
+- Most relevant variables are:
+    * mortstat (mortality status: dead(1) or alive(0))
+    * permth_int (months after follow-up interview)
+- More information about this data in[data/mortality_info](data/mortality_info/) folder.
 
 ### Additional Covariates
-To obtain Diabetes, Hypertension, Hiperlipidmia and SmokingStatus several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data following the criteria presented in the [papers](#papers).
+To obtain **Diabetes**, **Hypertension**, **Hiperlipidmia** and **SmokingStatus** several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data following the criteria presented in the [papers](#papers), specially in [2007 paper](papers/perlstein-et-al-2007-serum-total-bilirubin-level-and-prevalent-lower-extremity-peripheral-arterial-disease.pdf).
