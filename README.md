@@ -1,11 +1,13 @@
 ## Report URL
-[Overleaf link](https://www.overleaf.com/read/fgwtctfwcqzr#96a962)
+[Report view link (Overleaf)](https://www.overleaf.com/read/fgwtctfwcqzr#96a962)
+Note: this report refers to the [data/df_final_mortality.csv](data/df_final_mortality.csv)
 
 
-## Dataset
+## Datasets
+* [data/df_final_mortality.csv](data/df_final_mortality.csv)
+* [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) 
 
-#### Variables
-The dataset considered was [data/df_final_mortality.csv](data/df_final_mortality.csv) which was subsequent extended into [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) with the incorporation and modification of the following covariates:  Diabetes, Hypertension, Hiperlipidmia and SmokingStatus. The dataset was obtained using [NHANES data](#nhanes-data-by-year) and with data and criteria provided by the [papers](#papers). For variables documentation refer to [data/df_final_mortality_covariates_documentation.md](data/df_final_mortality_covariates_documentation.md)
+The dataset initially considered was [data/df_final_mortality.csv](data/df_final_mortality.csv) which was subsequent extended into [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) with the incorporation and modification of the following covariates:  Diabetes, Hypertension, Hiperlipidmia and SmokingStatus. The datasets were obtained using [NHANES data](#nhanes-data-by-year) and with data and criteria provided by the [papers](#papers). For variables documentation refer to [data/df_final_mortality_covariates_documentation.md](data/df_final_mortality_covariates_documentation.md)
 
 ## Papers 
 (2011) - [Secondary Prevention and Mortality in Peripheral Arterial Disease](/papers/pande-et-al-2011-secondary-prevention-and-mortality-in-peripheral-artery-disease.pdf)
