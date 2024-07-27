@@ -45,12 +45,13 @@ plot(km_fit2)
 sv_plot <- ggsurvplot(km_fit2, data=df, 
            #risk.table=TRUE, 
            conf.int=TRUE, 
-           ggtheme=theme_bw(), 
-           pval=TRUE, #pval.method = TRUE,
-           risk.table.col = "strata",
-           xlab = "Months of Follow Up After Interview",   # customize X axis label.
+           #ggtheme=theme_bw(), 
+           #pval=TRUE, #pval.method = TRUE,
+           xlim = c(0,250),
+           #risk.table.col = "strata",
+           xlab = "Time",   # customize X axis label.
            surv.median.line = "hv", #"#2E9FDF",
-           legend.labs = c("Non-Coffee Consumers", "Coffee Consumers"),
+           legend.labs = c("Did Not Consume Coffee", "Did Consume Coffee"),
            legend.title = "",
            #break.time.by = 200,
            #palette = c("#E7B800","#69C669","#64403E", "#C65751")
@@ -58,20 +59,20 @@ sv_plot <- ggsurvplot(km_fit2, data=df,
 sv_plot$plot <- sv_plot$plot + 
   theme(
       #plot.title = element_text(size = 20, face = "bold"),  # Title size
-        axis.title.x = element_text(size = 18),  # X-axis title size
-        axis.title.y = element_text(size = 18),  # Y-axis title size
-        axis.text.x = element_text(size = 15),   # X-axis text size
-        axis.text.y = element_text(size = 15),#,  # Y-axis text size
+        axis.title.x = element_text(size = 23),  # X-axis title size
+        axis.title.y = element_text(size = 23),  # Y-axis title size
+        axis.text.x = element_text(size = 20),   # X-axis text size
+        axis.text.y = element_text(size = 20),#,  # Y-axis text size
         #legend = element_text(size = 12),  # Legend text size
         #legend.title = element_text(size = 12))  # Legend title size
-        legend.text = element_text(size = 22))# Legend title size
+        legend.text = element_text(size = 17))# Legend title size
 
 sv_plot$legend <- sv_plot$legend + theme(legend.title = element_text(size = 15))  # Legend title size
 
 grid.draw.ggsurvplot <- function(x){
   survminer:::print.ggsurvplot(x, newpage = FALSE)
 } #Save ggplot
-ggsave("images/survival_analysis/km.png",plot=sv_plot,width = 10, height = 10, dpi = 300)
+ggsave("images/survival_analysis/km-coffee.png",plot=sv_plot,width = 10, height = 7, dpi = 300)
 
 iqr_standardization <- function(df, col_name) {
   # Calculate Q1 (25th percentile) and Q3 (75th percentile)
