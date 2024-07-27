@@ -1,5 +1,11 @@
 ## Report URL
-[Overleaf link](https://www.overleaf.com/5239177249dncfbbvytmqw#74d3c6)
+[Overleaf link](https://www.overleaf.com/read/fgwtctfwcqzr#96a962)
+
+
+## Dataset
+
+#### Variables
+The dataset considered was [data/df_final_mortality.csv](data/df_final_mortality.csv) which was subsequent extended into [data/df_mortality_covariates.csv](data/df_final_mortality_covariates.csv) with the incorporation and modification of the following covariates:  Diabetes, Hypertension, Hiperlipidmia and SmokingStatus. The dataset was obtained using [NHANES data](#nhanes-data-by-year) and with data and criteria provided by the [papers](#papers). For variables documentation refer to [data/df_final_mortality_covariates_documentation.md](data/df_final_mortality_covariates_documentation.md)
 
 ## Papers 
 (2011) - [Secondary Prevention and Mortality in Peripheral Arterial Disease](/papers/pande-et-al-2011-secondary-prevention-and-mortality-in-peripheral-artery-disease.pdf)
@@ -55,11 +61,11 @@ From the Examination Data we retrieved the following Data File:
     - **LEXRABPI**: Right ABPI <br>
 
     From these variables we created a variable for our disease (PAD):
-    - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the 2011 paper)
+    - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the [2011 paper]((/papers/pande-et-al-2011-secondary-prevention-and-mortality-in-peripheral-artery-disease.pdf)))
 
 
-### Coffee Types Data 
-**Source**: This data was extracted from the 2023 paper (Table S1) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee.
+#### Coffee Types Data 
+**Source**: This data was extracted from the 2023 paper ([Table S1](/papers/suplementary%20material/jper11172-sup-0002-tables1.docx)) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee.
 
 To obtain a comparable table with Table S1 in the 2023 paper, the following approach was conducted:
 1. Only one coffee register was considered per patient/respondent (SEQN)
@@ -72,12 +78,10 @@ We arrived at the following variables:
 - **FattyStatus**: (Binary)
 - **MilkContainingStatus**: (Binary)
 
-### Mortality Data
+#### Mortality Data
 We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/data-linkage/mortality-public.htm).
 - We speficially retrieved mortality data for the considered years (**1999-2004**)
 - More information about this data in [mortality_info folder](mortality_info/)
 
-### Dataset
-
-#### Variables
-The final Dataset [data/df_final_mortality.csv](data/df_final_mortality.csv) contains these variables and some more, you can find all variables and corresponding descriptions in [data/df_final_mortality_variables.md](data/df_final_mortality_variables.md)
+#### Additional Covariates
+To obtain Diabetes, Hypertension, Hiperlipidmia and SmokingStatus several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data. 
