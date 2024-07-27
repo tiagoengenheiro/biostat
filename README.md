@@ -19,7 +19,7 @@ The dataset initially considered was [data/df_final_mortality.csv](data/df_final
 We are going to consider 3 data periods (1999-2000 + 2001-2002 + 2003-2004) which were the periods considered by the 2011 paper. We could use more periods, but these were the only ones where data was collected to detect our diease (Peripheral Arterial Disease or PAD) 
 
 
-### NHANES Data (by Year):
+## NHANES Data (by Year):
 
 - [1999-00](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=1999)
 
@@ -34,7 +34,7 @@ From the links above it's possible to access all types of data:
 * **Laboratory Data** (here would be the data for the coffee metabolites but this data is not available in our 1999-2004 interval)
 * **etc** (not so relevant for us)
 
-#### Demographics Data
+### Demographics Data
 From the Demographics Data we retrieved the following Data File:
 - **Demographic Variables & Sample Weights**
 
@@ -47,7 +47,7 @@ From the Demographics Data we retrieved the following Data File:
     - **INDFMPIR**: Poverty income ratio (PIR) - a ratio of family income to poverty threshold
 
 
-#### Dietary Data
+### Dietary Data
 From the Dietary Data we retrieved the following Data File:
 - **Dietary Interview - Individual Foods**
 
@@ -55,7 +55,7 @@ From the Dietary Data we retrieved the following Data File:
     - **DRDIFDCD**: USDA food code (this code is equivalent to FNDDS and allows us to retrieve the coffee types using the supplementary table of the 2023 paper)
     - **DRXIGRMS**: Grams (I believe this variable points us to *Total Coffee Intake* from the 2023 paper)
 
-#### Examination Data
+### Examination Data
 From the Examination Data we retrieved the following Data File:
 - **Lower Extremity Disease** - Ankle Brachial Blood Pressure Index
 
@@ -67,8 +67,8 @@ From the Examination Data we retrieved the following Data File:
     - If one of these variables is lower or equal to 0.9, then the patient has PAD (this is the method used by the [2011 paper]((/papers/pande-et-al-2011-secondary-prevention-and-mortality-in-peripheral-artery-disease.pdf)))
 
 
-#### Coffee Types Data 
-**Source**: This data was extracted from the 2023 paper ([Table S1](/papers/suplementary%20material/jper11172-sup-0002-tables1.docx)) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee.
+### Coffee Types Data 
+**Source**: This data was extracted from the 2023 paper ([Table S1](/papers/suplementary%20material/jper11172-sup-0002-tables1.docx)) which was saved in tsv ([coffee_types.tsv](data/coffee_types.tsv)) and contains an association between one USDA/FNDDS food code and one or multiple types of coffee.
 
 To obtain a comparable table with Table S1 in the 2023 paper, the following approach was conducted:
 1. Only one coffee register was considered per patient/respondent (SEQN)
@@ -81,10 +81,10 @@ We arrived at the following variables:
 - **FattyStatus**: (Binary)
 - **MilkContainingStatus**: (Binary)
 
-#### Mortality Data
+### Mortality Data
 We retrieved this data from NDI [National Death Index](https://www.cdc.gov/nchs/data-linkage/mortality-public.htm).
 - We speficially retrieved mortality data for the considered years (**1999-2004**)
 - More information about this data in [mortality_info folder](mortality_info/)
 
-#### Additional Covariates
+### Additional Covariates
 To obtain Diabetes, Hypertension, Hiperlipidmia and SmokingStatus several types of data were combined such as mortality data, examination data, laboratory data and questionnaire data following the criteria presented in the [papers](#papers).
