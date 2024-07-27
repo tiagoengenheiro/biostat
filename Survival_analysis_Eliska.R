@@ -202,15 +202,17 @@ stepwise_model <- stepAIC(model_full, direction = "both")
 #selected variables are Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension
 
 #fitind everything with new data:
-model2 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
+model1 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct, data = data[complete.cases(data[, c("PovertyIncome")]), ])
+summary(model1)
+
+model2 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model2)
 
-model3 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome, data = data)
+model_step <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension, data = data)
+summary(model_step)
+
+model3 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome +SmokingStatus+Diabetes+ Hypertension + Hyperlipidemia, data = data)
 summary(model3)
-
-model4 <- coxph(Surv(permth_int, mortstat) ~ Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension, data = data)
-summary(model4)
-
 
 
 #-------ASSUMPTIONS
@@ -219,8 +221,8 @@ summary(model4)
   #Ha... HR are not
 cox.zph(model1) 
 cox.zph(model2) 
-cox.zph(model3) 
-cox.zph(model4)
+cox.zph(model_step) 
+cox.zph(model3)
 
 #checking the linearity 
 plot(predict(model2), residuals(model2,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
@@ -243,9 +245,9 @@ lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col 
 #print(selected_points)
 #View(data[selected_points,])
 
-plot(predict(model4), residuals(model4,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
+plot(predict(model_step), residuals(model4,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
 abline(h=0)
-lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col = "red")
+lines(smooth.spline(predict(model_step), residuals(model_step,type = "martingale")),col = "red")
 
 # Use identify to interactively select points
 #selected_points <- identify(predict(model4), residuals(model4,type = "martingale"), labels = seq_along(predict(model3)))
@@ -259,15 +261,15 @@ lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col 
 AIC(model1)
 AIC(model2)
 AIC(model3)
-AIC(model4)
+AIC(model_step)
 BIC(model1)
 BIC(model2)
 BIC(model3)
-BIC(model4)
+BIC(model_step)
 #the higher the concordance the better
 summary(model2)$concordance[1]
 summary(model3)$concordance[1]
-summary(model4)$concordance[1]
+summary(model_step)$concordance[1]
 
 
 #-------COFFEE INTAKE
@@ -351,26 +353,30 @@ stepwise_model <- stepAIC(model_full, direction = "both")
 #selected variables are Coffee+Sex+Race+Age_fct+PovertyIncome + Hypertension
 
 #fitting everything with new data:
-model2 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct, data = data)
+model1 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct, data = data)
+summary(model1)
+
+model2 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model2)
 
-model3 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome, data = data)
+model_step <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome + Hypertension + SmokingStatus, data = data)
+summary(model_step)
+
+model3 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome +SmokingStatus+Diabetes+ Hypertension + Hyperlipidemia, data = data)
 summary(model3)
 
-model4 <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "did not drink any coffee")+Sex+Race+Age_fct+PovertyIncome + Hypertension + SmokingStatus, data = data)
-summary(model4)
-
-
 #fitting everything with new data:
-model2_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct, data = data)
+model1_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct, data = data)
+summary(model1_rel)
+
+model2_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome, data = data)
 summary(model2_rel)
 
-model3_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome, data = data)
+model_step_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome + Hypertension, data = data)
+summary(model_step_rel)
+
+model3_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome +SmokingStatus+Diabetes+ Hypertension + Hyperlipidemia, data = data)
 summary(model3_rel)
-
-model4_rel <- coxph(Surv(permth_int, mortstat) ~ relevel(CaffeinatedStatus, ref = "1")+Sex+Race+Age_fct+PovertyIncome + Hypertension, data = data)
-summary(model4_rel)
-
 
 
 #-------ASSUMPTIONS
@@ -380,7 +386,7 @@ summary(model4_rel)
 cox.zph(model1) 
 cox.zph(model2) 
 cox.zph(model3) 
-cox.zph(model4)
+cox.zph(model_step)
 
 #checking the linearity 
 plot(predict(model2), residuals(model2,type = "martingale"),xlab = "fitted values",ylab = "Residuals",las = 1)
@@ -403,9 +409,9 @@ lines(smooth.spline(predict(model3), residuals(model3,type = "martingale")),col 
 #print(selected_points)
 #View(data[selected_points,])
 
-plot(predict(model4), residuals(model4,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
+plot(predict(model_step), residuals(model_step,type = "deviance"),xlab = "fitted values",ylab = "Residuals",las = 1)
 abline(h=0)
-lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col = "red")
+lines(smooth.spline(predict(model_step), residuals(model_step,type = "martingale")),col = "red")
 
 # Use identify to interactively select points
 #selected_points <- identify(predict(model4), residuals(model4,type = "martingale"), labels = seq_along(predict(model3)))
@@ -419,11 +425,11 @@ lines(smooth.spline(predict(model4), residuals(model4,type = "martingale")),col 
 AIC(model1)
 AIC(model2)
 AIC(model3)
-AIC(model4)
+AIC(model_step)
 BIC(model1)
 BIC(model2)
 BIC(model3)
-BIC(model4)
+BIC(model_step)
 
 #the higher the concordance the better
 summary(model2)$concordance[1]
