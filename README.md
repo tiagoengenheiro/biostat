@@ -11,6 +11,7 @@ The dataset initially considered was [data/df_final_mortality.csv](data/df_final
 
 ## Papers 
 (2007) - [Serum Total Bilirubin Level and Prevalent Lower-Extremity Peripheral Arterial Disease](/papers/perlstein-et-al-2007-serum-total-bilirubin-level-and-prevalent-lower-extremity-peripheral-arterial-disease.pdf)
+
 (2011) - [Secondary Prevention and Mortality in Peripheral Arterial Disease](/papers/pande-et-al-2011-secondary-prevention-and-mortality-in-peripheral-artery-disease.pdf)
 
 (2023) - [The associations of coffee consumption, coffee types, and caffeine metabolites with periodontitis: Results from NHANES 2009–2014](/papers/Journal%20of%20Periodontology%20-%202023%20-%20Chen%20-%20The%20associations%20of%20coffee%20consumption%20%20coffee%20types%20%20and%20caffeine%20metabolites.pdf)
